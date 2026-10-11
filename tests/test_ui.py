@@ -64,6 +64,24 @@ class TestStaticUI(unittest.TestCase):
         self.assertIn('id="server-list"', html_content)
         self.assertIn('id="btn-preview-cleanup"', html_content)
 
+    def test_login_ui_structure(self) -> None:
+        html_file = self.root / "frontend" / "index.html"
+        html_content = html_file.read_text(encoding="utf-8")
+
+        self.assertIn('id="login-view"', html_content)
+        self.assertIn('id="app-view"', html_content)
+        self.assertIn('id="tab-btn-email"', html_content)
+        self.assertIn('id="tab-btn-token"', html_content)
+        self.assertIn('id="pane-email"', html_content)
+        self.assertIn('id="pane-token"', html_content)
+        self.assertIn('id="input-email"', html_content)
+        self.assertIn('id="input-password"', html_content)
+        self.assertIn('id="input-token-main"', html_content)
+        self.assertIn('CleanCord', html_content)
+        self.assertIn('Discord Server Cleanup', html_content)
+        self.assertIn('Welcome Back', html_content)
+        self.assertIn('Login with Token', html_content)
+
 
 if __name__ == "__main__":
     unittest.main()

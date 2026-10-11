@@ -532,10 +532,10 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 900;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   user-select: none;
-  padding: clamp(16px, 3vh, 48px);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 /* Atmospheric Glows & Stars */
@@ -726,14 +726,14 @@ body {
 
 .login-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   background: rgba(20, 25, 38, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  padding: clamp(28px, 4vw, 44px);
+  border-radius: 20px;
+  padding: clamp(20px, 3vh, 32px) clamp(22px, 3vw, 36px);
   color: #FFFFFF;
 }
 
@@ -741,22 +741,22 @@ body {
 .tab-switcher {
   display: flex;
   background: rgba(11, 15, 25, 0.7);
-  padding: 6px;
-  border-radius: 14px;
-  margin-bottom: clamp(22px, 3vh, 30px);
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: clamp(16px, 2.2vh, 22px);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .tab-btn {
   flex: 1;
-  padding: clamp(10px, 1.4vh, 13px) 16px;
-  font-size: clamp(13px, 1.2vw, 14.5px);
+  padding: 9px 14px;
+  font-size: 13.5px;
   font-weight: 600;
   font-family: var(--font-sans);
   border: none;
   background: transparent;
   color: #8f99ad;
-  border-radius: 10px;
+  border-radius: 9px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
@@ -774,24 +774,24 @@ body {
 
 /* Auth Pane Content */
 .auth-heading {
-  font-size: clamp(22px, 2.5vw, 28px);
+  font-size: clamp(20px, 2.2vw, 25px);
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: -0.4px;
 }
 
 .auth-subheading {
-  font-size: clamp(13px, 1.25vw, 14.5px);
+  font-size: 13px;
   color: #8994a9;
-  margin-bottom: clamp(20px, 2.8vh, 26px);
-  line-height: 1.5;
+  margin-bottom: clamp(14px, 2vh, 18px);
+  line-height: 1.4;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 2.2vh, 20px);
+  gap: clamp(12px, 1.6vh, 15px);
 }
 
 .form-group {
@@ -828,10 +828,10 @@ body {
   width: 100%;
   background: #0f1320;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 12px;
-  padding: clamp(13px, 1.6vh, 15px) 44px clamp(13px, 1.6vh, 15px) 46px;
+  border-radius: 11px;
+  padding: 11px 40px 11px 42px;
   color: #FFFFFF;
-  font-size: clamp(13.5px, 1.2vw, 14.5px);
+  font-size: 13.5px;
   font-family: var(--font-sans);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
@@ -869,11 +869,11 @@ body {
 .forgot-link-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .forgot-link {
-  font-size: 12.5px;
+  font-size: 12px;
   color: #6d7bf8;
   text-decoration: none;
   font-weight: 500;
@@ -889,10 +889,10 @@ body {
   background: rgba(217, 45, 58, 0.12);
   border: 1px solid rgba(217, 45, 58, 0.4);
   color: #ff707c;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.45;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
 }
 
 /* Primary Button (Gradient) */
@@ -900,9 +900,9 @@ body {
   background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
   color: #FFFFFF;
   border: none;
-  border-radius: 12px;
-  padding: clamp(13px, 1.6vh, 15px) 24px;
-  font-size: clamp(14px, 1.2vw, 15.5px);
+  border-radius: 11px;
+  padding: 11px 20px;
+  font-size: 14px;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
@@ -910,14 +910,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 6px 20px rgba(88, 101, 242, 0.38);
+  box-shadow: 0 6px 18px rgba(88, 101, 242, 0.38);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .btn-primary-gradient:hover:not(:disabled) {
   background: linear-gradient(135deg, #6572f7 0%, #4e5ad4 100%);
-  box-shadow: 0 8px 26px rgba(88, 101, 242, 0.52);
+  box-shadow: 0 8px 24px rgba(88, 101, 242, 0.5);
   transform: translateY(-1px);
 }
 
@@ -936,9 +936,9 @@ body {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 4px 0;
+  margin: 2px 0;
   color: #636d84;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -951,7 +951,7 @@ body {
 }
 
 .auth-divider span {
-  padding: 0 14px;
+  padding: 0 12px;
 }
 
 /* Secondary Dark Button */
@@ -959,16 +959,16 @@ body {
   background: rgba(30, 36, 54, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.09);
   color: #cbd3e6;
-  border-radius: 12px;
-  padding: clamp(12px, 1.5vh, 14px) 20px;
-  font-size: clamp(13.5px, 1.2vw, 14.5px);
+  border-radius: 11px;
+  padding: 10px 18px;
+  font-size: 13.5px;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   transition: all 0.15s ease;
 }
 
@@ -986,7 +986,7 @@ body {
 @media (max-width: 920px) {
   .login-wrapper {
     grid-template-columns: 1fr;
-    max-width: 520px;
+    max-width: 480px;
   }
 
   .login-brand-col {
@@ -998,27 +998,55 @@ body {
   }
 }
 
-/* Very Short Viewports (<= 640px height): Ensure vertical scroll and reduced vertical padding */
-@media (max-height: 640px) {
-  .login-page-container {
-    align-items: flex-start;
-    padding: 16px;
+/* Short Viewports (<= 680px height): Compact sizing maintaining complete no-scroll fit */
+@media (max-height: 680px) {
+  .login-wrapper {
+    gap: 24px;
   }
 
   .login-logo-box {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    height: 70px;
+    width: 95px;
+  }
+
+  .brand-title {
+    font-size: 32px;
+  }
+
+  .brand-subtitle {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .login-card {
+    padding: 16px 24px;
   }
 
   .tab-switcher {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    padding: 3px;
+  }
+
+  .auth-heading {
+    font-size: 19px;
   }
 
   .auth-subheading {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   .auth-form {
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .auth-input {
+    padding: 9px 38px 9px 40px;
+  }
+
+  .btn-primary-gradient,
+  .btn-secondary-dark {
+    padding: 9px 16px;
   }
 }
 

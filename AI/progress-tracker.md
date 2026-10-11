@@ -5,8 +5,8 @@
 - **Project:** Server Prune
 - **Phase:** Foundation
 - **Current branch:** `1-foundation`
-- **Current commit:** In progress (`1.1-project-setup`)
-- **Next unit:** `1.2-desktop-window`
+- **Current commit:** In progress (`1.2-desktop-window`)
+- **Next unit:** `1.3-static-ui`
 - **Merge status:** No feature branch merged yet
 
 > Branch and commit details must be updated from actual Git state. Never assume a branch, commit, or merge exists without verification.
@@ -18,7 +18,7 @@
 | Commit | Unit | Status |
 |---|---|---|
 | `1.1-project-setup` | Establish minimal directory structure, dependencies, and git baseline | Completed |
-| `1.2-desktop-window` | Launch pywebview desktop shell and bridge lifecycle | Pending |
+| `1.2-desktop-window` | Launch pywebview desktop shell and bridge lifecycle | Completed |
 | `1.3-static-ui` | Implement light-themed UI shell with mock server data | Pending |
 
 ### Branch Tracking

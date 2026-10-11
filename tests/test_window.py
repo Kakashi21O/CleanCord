@@ -38,5 +38,22 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertEqual(window, mock_window)
 
 
+    def test_bridge_query_and_selection(self) -> None:
+        bridge = DesktopBridge()
+        servers = bridge.get_servers(query="Elden")
+        self.assertEqual(len(servers), 1)
+        self.assertEqual(servers[0]["name"], "Elden Ring Community")
+
+        # Validation eliminates owned server IDs
+        owned_id = next(s["id"] for s in bridge.get_servers() if s["owner"])
+        eligible = bridge.validate_selection([servers[0]["id"], owned_id])
+        self.assertIn(servers[0]["id"], eligible)
+        self.assertNotIn(owned_id, eligible)
+
+        # Select all in filtered view excludes owned servers
+        all_filtered = bridge.select_all_filtered()
+        self.assertNotIn(owned_id, all_filtered)
+
+
 if __name__ == "__main__":
     unittest.main()

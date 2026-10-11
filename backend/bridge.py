@@ -32,7 +32,38 @@ class DesktopBridge:
             "mode": "mock",
         }
 
-    def get_servers(self) -> List[Dict[str, Any]]:
-        """Return normalized list of servers."""
-        return [server.to_dict() for server in self._servers]
+    def get_servers(
+        self,
+        query: Optional[str] = None,
+        category: Optional[str] = None,
+        ascending: bool = True,
+    ) -> List[Dict[str, Any]]:
+        """Return filtered and sorted list of servers."""
+        filtered = self._servers
+        if query or category:
+            from backend.servers.service import filter_servers
+            filtered = filter_servers(filtered, query=query, category=category)
+        
+        from backend.servers.service import sort_servers
+        sorted_list = sort_servers(filtered, ascending=ascending)
+        return [server.to_dict() for server in sorted_list]
+
+    def validate_selection(self, selected_ids: List[str]) -> List[str]:
+        """Validate proposed selection against owner protection rules.
+        
+        Returns strictly eligible (non-owned) server IDs.
+        """
+        from backend.servers.service import compute_eligible_selection
+        eligible = compute_eligible_selection(self._servers, set(selected_ids))
+        return list(eligible)
+
+    def select_all_filtered(
+        self,
+        query: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> List[str]:
+        """Return IDs of all eligible servers in the current filter scope."""
+        from backend.servers.service import filter_servers, select_all_eligible
+        filtered = filter_servers(self._servers, query=query, category=category)
+        return list(select_all_eligible(filtered))
 

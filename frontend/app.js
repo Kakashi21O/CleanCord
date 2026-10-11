@@ -1,5 +1,5 @@
 /**
- * Client-side Server Prune Interface
+ * Client-side CleanCord / Discord Server Cleanup Interface
  * Adheres to Beautiful UI guidelines and UI context specs.
  */
 

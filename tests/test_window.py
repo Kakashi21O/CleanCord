@@ -17,8 +17,9 @@ class TestDesktopWindow(unittest.TestCase):
         status = bridge.get_status()
         self.assertIsInstance(status, dict)
         self.assertEqual(status.get("status"), "online")
-        self.assertEqual(status.get("app_name"), "Server Prune")
+        self.assertEqual(status.get("app_name"), "CleanCord")
         self.assertEqual(status.get("mode"), "mock")
+
 
     @patch("webview.create_window")
     def test_create_window_calls_pywebview(self, mock_create_window: MagicMock) -> None:

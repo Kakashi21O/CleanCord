@@ -6,7 +6,7 @@ from typing import Optional
 import webview
 from backend.bridge import DesktopBridge
 
-APP_TITLE = "Server Prune"
+APP_TITLE = "CleanCord"
 DEFAULT_WIDTH = 960
 DEFAULT_HEIGHT = 700
 MIN_WIDTH = 800

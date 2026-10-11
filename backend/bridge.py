@@ -63,9 +63,10 @@ class DesktopBridge:
         """Return system status and mode."""
         return {
             "status": "online",
-            "app_name": "Server Prune",
+            "app_name": "CleanCord",
             "mode": getattr(self, "mode", "mock"),
         }
+
 
 
     def get_servers(

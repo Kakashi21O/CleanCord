@@ -12,6 +12,13 @@ class TestDesktopWindow(unittest.TestCase):
         index_path = app.get_frontend_index_path()
         self.assertTrue(index_path.is_file(), f"{index_path} should exist")
 
+    def test_app_icon_path_exists(self) -> None:
+        icon_path = app.get_app_icon_path()
+        self.assertIsNotNone(icon_path)
+        self.assertTrue(icon_path.is_file(), f"{icon_path} should exist")
+        self.assertTrue(str(icon_path).endswith("cleancord.ico"))
+
+
     def test_bridge_get_status(self) -> None:
         bridge = DesktopBridge()
         status = bridge.get_status()
@@ -37,6 +44,21 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertEqual(kwargs.get("height"), app.DEFAULT_HEIGHT)
         self.assertEqual(kwargs.get("min_size"), (app.MIN_WIDTH, app.MIN_HEIGHT))
         self.assertEqual(window, mock_window)
+
+    @patch("webview.start")
+    @patch("app.create_window")
+    def test_main_passes_icon_to_webview_start(
+        self,
+        mock_create_window: MagicMock,
+        mock_start: MagicMock,
+    ) -> None:
+        app.main()
+        mock_create_window.assert_called_once()
+        mock_start.assert_called_once()
+        args, kwargs = mock_start.call_args
+        self.assertIn("icon", kwargs)
+        self.assertTrue(kwargs["icon"].endswith("cleancord.ico"))
+
 
 
     def test_bridge_query_and_selection(self) -> None:

@@ -18,6 +18,12 @@ def get_frontend_index_path() -> Path:
     return Path(__file__).resolve().parent / "frontend" / "index.html"
 
 
+def get_app_icon_path() -> Optional[Path]:
+    """Resolve path to native CleanCord application icon."""
+    icon_path = Path(__file__).resolve().parent / "assets" / "cleancord.ico"
+    return icon_path if icon_path.is_file() else None
+
+
 def create_window(bridge: Optional[DesktopBridge] = None) -> webview.Window:
     """Create pywebview window with explicit bridge API."""
     index_file = get_frontend_index_path()
@@ -40,8 +46,11 @@ def main() -> None:
     """Launch desktop window."""
     bridge = DesktopBridge()
     create_window(bridge)
-    webview.start(debug=False)
+    icon_path = get_app_icon_path()
+    icon_arg = str(icon_path) if icon_path else None
+    webview.start(debug=False, icon=icon_arg)
 
 
 if __name__ == "__main__":
     main()
+

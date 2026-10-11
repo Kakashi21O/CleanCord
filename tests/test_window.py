@@ -92,7 +92,29 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertFalse(res_empty["success"])
         self.assertIn("Token cannot be empty", res_empty["error"])
 
+    def test_bridge_preview_and_execute_cleanup(self) -> None:
+        bridge = DesktopBridge()
+        servers = bridge.get_servers()
+        eligible_server = next(s for s in servers if not s["owner"])
+        owned_server = next(s for s in servers if s["owner"])
+
+        # Preview checks owner protection
+        preview = bridge.preview_cleanup([eligible_server["id"], owned_server["id"]])
+        self.assertEqual(preview["eligible_count"], 1)
+        self.assertEqual(preview["protected_owner_count"], 1)
+
+        # Execution leaves eligible server and removes it from list
+        result = bridge.execute_cleanup([eligible_server["id"], owned_server["id"]])
+        self.assertEqual(result["success_count"], 1)
+        self.assertIn(eligible_server["id"], result["left_server_ids"])
+
+        # Remaining servers no longer include the left server
+        remaining_ids = [s["id"] for s in bridge.get_servers()]
+        self.assertNotIn(eligible_server["id"], remaining_ids)
+        self.assertIn(owned_server["id"], remaining_ids)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

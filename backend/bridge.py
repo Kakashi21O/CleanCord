@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from backend.servers.categorizer import infer_category
 from backend.servers.mock_data import MOCK_SERVERS
@@ -131,4 +131,48 @@ class DesktopBridge:
         filtered = filter_servers(self._servers, query=query, category=category)
         sorted_list = sort_servers(filtered, ascending=ascending)
         return export_to_csv(sorted_list)
+
+    def preview_cleanup(self, selected_ids: List[str]) -> Dict[str, Any]:
+
+        """Generate safe pre-flight cleanup preview."""
+        from backend.cleanup import generate_cleanup_preview
+
+        whitelist_ids: Set[str] = set()
+        if hasattr(self, "storage_manager") and self.storage_manager is not None:
+            whitelist_ids = self.storage_manager.load_whitelist()
+
+        preview = generate_cleanup_preview(self._servers, set(selected_ids), whitelist_ids)
+        return preview.to_dict()
+
+    def execute_cleanup(self, selected_ids: List[str]) -> Dict[str, Any]:
+        """Execute cleanup on selected servers.
+        
+        In Demo mode, simulates verified departure.
+        In Live mode, calls live Discord DELETE endpoint with rate limiting.
+        """
+        from backend.cleanup import execute_server_cleanup
+
+        whitelist_ids: Set[str] = set()
+        if hasattr(self, "storage_manager") and self.storage_manager is not None:
+            whitelist_ids = self.storage_manager.load_whitelist()
+
+        if self.mode == "live" and self.api_client:
+            leave_fn = self.api_client.leave_guild
+        else:
+            # Demo/mock simulation
+            leave_fn = lambda sid: True
+
+        result = execute_server_cleanup(
+            servers=self._servers,
+            selected_ids=set(selected_ids),
+            leave_fn=leave_fn,
+            whitelist_ids=whitelist_ids,
+        )
+
+        # Remove successfully left servers from current in-memory view
+        left_set = set(result.left_server_ids)
+        self._servers = [s for s in self._servers if s.id not in left_set]
+
+        return result.to_dict()
+
 

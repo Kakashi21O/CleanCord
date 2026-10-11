@@ -90,6 +90,7 @@ function renderList() {
 
     card.innerHTML = `
       <div class="server-row-main" tabindex="0" role="button" aria-expanded="false" aria-label="Toggle details for ${escapeHtml(server.name)}">
+        <span class="expand-chevron" aria-hidden="true">▶</span>
         <div class="server-icon" aria-hidden="true">${initial}</div>
         <div class="server-info">
           <div class="server-title-row">

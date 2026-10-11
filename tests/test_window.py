@@ -63,6 +63,13 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertIn("Elden Ring Community", csv_export)
         self.assertIn("id,name,owner,category,icon_url", csv_export)
 
+    def test_connect_token_validation(self) -> None:
+        bridge = DesktopBridge()
+        res_empty = bridge.connect_token("")
+        self.assertFalse(res_empty["success"])
+        self.assertIn("Token cannot be empty", res_empty["error"])
+
 
 if __name__ == "__main__":
     unittest.main()
+

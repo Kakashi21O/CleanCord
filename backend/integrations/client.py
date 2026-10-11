@@ -29,7 +29,10 @@ class DiscordApiClient:
         rate_limit_pause: float = 1.0,
         opener: Optional[urllib.request.OpenerDirector] = None,
     ) -> None:
-        self.token = token.strip() if token else None
+        import re
+
+        clean_token = re.sub(r"[^a-zA-Z0-9._-]", "", token) if token else None
+        self.token = clean_token if clean_token else None
         self.rate_limit_pause = rate_limit_pause
         self.opener = opener or self._build_opener()
 

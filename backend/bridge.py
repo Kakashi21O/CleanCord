@@ -32,9 +32,11 @@ class DesktopBridge:
 
     def connect_token(self, token: str) -> Dict[str, Any]:
         """Validate token and fetch user servers in live mode."""
-        clean_token = token.strip() if token else ""
+        import re
+
+        clean_token = re.sub(r"[^a-zA-Z0-9._-]", "", token) if token else ""
         if not clean_token:
-            return {"success": False, "error": "Token cannot be empty"}
+            return {"success": False, "error": "Token cannot be empty or contain invalid characters"}
 
         from backend.integrations.client import DiscordApiClient
         from backend.servers.normalizer import normalize_guilds_batch

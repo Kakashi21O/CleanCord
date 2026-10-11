@@ -92,6 +92,11 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertFalse(res_empty["success"])
         self.assertIn("Token cannot be empty", res_empty["error"])
 
+        # Invalid characters only should be stripped to empty and rejected
+        res_invalid = bridge.connect_token("   $$$%%%   ")
+        self.assertFalse(res_invalid["success"])
+        self.assertIn("Token cannot be empty", res_invalid["error"])
+
     def test_bridge_preview_and_execute_cleanup(self) -> None:
         bridge = DesktopBridge()
         servers = bridge.get_servers()

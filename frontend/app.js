@@ -90,6 +90,7 @@ function renderList() {
 
     card.innerHTML = `
       <div class="server-row-main" tabindex="0" role="button" aria-expanded="false" aria-label="Toggle details for ${escapeHtml(server.name)}">
+        <span class="expand-chevron" aria-hidden="true">▶</span>
         <div class="server-icon" aria-hidden="true">${initial}</div>
         <div class="server-info">
           <div class="server-title-row">
@@ -210,7 +211,21 @@ function setupEvents() {
   });
 
   // Bulk Select All (operating only on eligible, non-owner visible servers)
-  btnSelectAll.addEventListener('click', () => {
+  btnSelectAll.addEventListener('click', async () => {
+    // If bridge provides select_all_filtered, validate through backend
+    try {
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.select_all_filtered === 'function') {
+        const eligibleIds = await window.pywebview.api.select_all_filtered(searchQuery, activeCategory);
+        if (Array.isArray(eligibleIds)) {
+          eligibleIds.forEach(id => selectedServerIds.add(id));
+          renderList();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend select_all_filtered fallback:', err);
+    }
+
     const visible = getVisibleServers();
     visible.forEach(server => {
       if (!server.owner) {

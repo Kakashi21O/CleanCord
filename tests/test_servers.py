@@ -102,6 +102,28 @@ class TestServerServices(unittest.TestCase):
         self.assertEqual(all_eligible, {"101", "102", "104"})
         self.assertNotIn("103", all_eligible)
 
+    def test_discord_guild_normalization(self) -> None:
+        from backend.servers import normalize_discord_guild, normalize_guilds_batch
+
+        raw = {
+            "id": "789123456",
+            "name": "Rust & Python Hackers",
+            "icon": "abc123iconhash",
+            "owner": True,
+            "extra_field_members": 9999,
+        }
+        server = normalize_discord_guild(raw)
+        self.assertIsNotNone(server)
+        self.assertEqual(server.id, "789123456")
+        self.assertEqual(server.name, "Rust & Python Hackers")
+        self.assertTrue(server.owner)
+        self.assertEqual(server.category, "Development")
+        self.assertEqual(server.icon_url, "https://cdn.discordapp.com/icons/789123456/abc123iconhash.png")
+
+        # Incomplete raw entries are safely filtered
+        batch = normalize_guilds_batch([raw, {"id": "", "name": ""}])
+        self.assertEqual(len(batch), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,5 @@
 /**
- * Client-side Server Prune Interface
+ * Client-side CleanCord / Discord Server Cleanup Interface
  * Adheres to Beautiful UI guidelines and UI context specs.
  */
 
@@ -293,6 +293,64 @@ function setupEvents() {
         triggerDownload(content, 'discord-servers.csv', 'text/csv');
       } catch (err) {
         console.error('Failed to export CSV:', err);
+      }
+    });
+  }
+
+  // Token connection modal
+  const btnOpenTokenModal = document.getElementById('btn-open-token-modal');
+  const tokenModal = document.getElementById('token-modal');
+  const tokenInput = document.getElementById('token-input');
+  const tokenError = document.getElementById('token-error');
+  const tokenModalCancel = document.getElementById('token-modal-cancel');
+  const tokenModalSubmit = document.getElementById('token-modal-submit');
+
+  if (btnOpenTokenModal && tokenModal) {
+    btnOpenTokenModal.addEventListener('click', () => {
+      tokenInput.value = '';
+      tokenError.style.display = 'none';
+      tokenModal.style.display = 'flex';
+    });
+
+    tokenModalCancel.addEventListener('click', () => {
+      tokenModal.style.display = 'none';
+    });
+
+    tokenModalSubmit.addEventListener('click', async () => {
+      const val = tokenInput.value.trim();
+      if (!val) {
+        tokenError.textContent = 'Please enter a token';
+        tokenError.style.display = 'block';
+        return;
+      }
+
+      tokenModalSubmit.disabled = true;
+      tokenModalSubmit.textContent = 'Connecting...';
+      tokenError.style.display = 'none';
+
+      try {
+        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.connect_token === 'function') {
+          const res = await window.pywebview.api.connect_token(val);
+          if (res && res.success) {
+            tokenModal.style.display = 'none';
+            const statusBadge = document.getElementById('status-badge');
+            if (statusBadge) {
+              statusBadge.textContent = `Connected (${res.username})`;
+              statusBadge.style.backgroundColor = 'var(--state-success-bg)';
+              statusBadge.style.color = 'var(--state-success)';
+            }
+            await loadServers();
+          } else {
+            tokenError.textContent = res.error || 'Connection failed';
+            tokenError.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        tokenError.textContent = 'Error connecting to bridge';
+        tokenError.style.display = 'block';
+      } finally {
+        tokenModalSubmit.disabled = false;
+        tokenModalSubmit.textContent = 'Connect';
       }
     });
   }

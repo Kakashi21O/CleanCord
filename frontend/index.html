@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Server Prune</title>
+  <title>CleanCord</title>
+  <link rel="icon" type="image/x-icon" href="../assets/cleancord.ico">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,10 +12,20 @@
     <!-- Header -->
     <header class="header">
       <div class="header-brand">
-        <h1 class="app-title">Server Prune</h1>
-        <span id="status-badge" class="status-badge">Mock Mode</span>
+        <div class="header-titles">
+          <div class="header-title-row">
+            <h1 class="app-title">Discord Server Cleanup</h1>
+            <span id="status-badge" class="status-badge">Demo Mode</span>
+          </div>
+          <p class="app-description">View, search and leave Discord servers easily</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-token-modal" class="btn-secondary" style="font-size: 12px; padding: 4px 10px;">Connect Discord</button>
       </div>
     </header>
+
+
 
     <!-- Filter & Search Bar -->
     <section class="controls-section">
@@ -85,6 +96,32 @@
     </div>
   </div>
 
+  <!-- Token Connection Modal -->
+  <div id="token-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="token-modal-title">
+    <div class="modal-content">
+      <h3 id="token-modal-title" class="modal-title">Connect Discord Session</h3>
+      <p class="modal-desc">
+        Enter your Discord authorization token. Tokens are processed in local memory only and never stored in files, exports, or commits.
+      </p>
+      <div style="margin-bottom: var(--space-4);">
+        <input 
+          type="password" 
+          id="token-input" 
+          class="search-input" 
+          placeholder="Paste Discord token here..." 
+          aria-label="Discord authorization token"
+        >
+        <div id="token-error" style="color: var(--state-error); font-size: 12px; margin-top: 4px; display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="token-modal-cancel" class="btn-secondary">Cancel</button>
+        <button id="token-modal-submit" class="btn-secondary" style="background-color: var(--accent-primary); color: #FFF; border-color: var(--accent-primary);">Connect</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
+
+

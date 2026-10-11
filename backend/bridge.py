@@ -11,7 +11,13 @@ class DesktopBridge:
     Treats all incoming data from the webview context as untrusted.
     """
 
-    def __init__(self, raw_servers: Optional[List[Dict[str, Any]]] = None) -> None:
+    def __init__(
+        self,
+        raw_servers: Optional[List[Dict[str, Any]]] = None,
+        api_client: Optional[Any] = None,
+    ) -> None:
+        self.api_client = api_client
+        self.mode = "live" if api_client is not None else "mock"
         raw_list = raw_servers if raw_servers is not None else MOCK_SERVERS
         self._servers = [
             Server(
@@ -24,13 +30,44 @@ class DesktopBridge:
             for s in raw_list
         ]
 
+    def connect_token(self, token: str) -> Dict[str, Any]:
+        """Validate token and fetch user servers in live mode."""
+        clean_token = token.strip() if token else ""
+        if not clean_token:
+            return {"success": False, "error": "Token cannot be empty"}
+
+        from backend.integrations.client import DiscordApiClient
+        from backend.servers.normalizer import normalize_guilds_batch
+
+        client = DiscordApiClient(token=clean_token)
+        user = client.get_current_user()
+        if not user:
+            return {"success": False, "error": "Invalid or expired Discord token"}
+
+        raw_guilds = client.fetch_all_guilds()
+        normalized = normalize_guilds_batch(raw_guilds)
+
+        self.api_client = client
+        self.mode = "live"
+        self._servers = normalized
+
+        return {
+            "success": True,
+            "username": user.get("username", "Unknown"),
+            "server_count": len(self._servers),
+            "mode": self.mode,
+        }
+
+
     def get_status(self) -> Dict[str, Any]:
         """Return system status and mode."""
         return {
             "status": "online",
-            "app_name": "Server Prune",
-            "mode": "mock",
+            "app_name": "CleanCord",
+            "mode": getattr(self, "mode", "mock"),
         }
+
+
 
     def get_servers(
         self,

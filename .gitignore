@@ -1,4 +1,17 @@
-#env files 
-.env
+# Python cache and environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
 
-AI/
+# Credentials & environment variables
+.env
+.env.*
+
+# Distribution / builds
+build/
+dist/
+*.spec

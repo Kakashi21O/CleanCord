@@ -54,6 +54,15 @@ class TestDesktopWindow(unittest.TestCase):
         all_filtered = bridge.select_all_filtered()
         self.assertNotIn(owned_id, all_filtered)
 
+    def test_bridge_export_methods(self) -> None:
+        bridge = DesktopBridge()
+        json_export = bridge.export_servers_json(query="Elden")
+        self.assertIn("Elden Ring Community", json_export)
+
+        csv_export = bridge.export_servers_csv(query="Elden")
+        self.assertIn("Elden Ring Community", csv_export)
+        self.assertIn("id,name,owner,category,icon_url", csv_export)
+
 
 if __name__ == "__main__":
     unittest.main()

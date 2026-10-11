@@ -241,6 +241,62 @@ function setupEvents() {
     renderList();
   });
 
+  // Export buttons
+  const btnExportJson = document.getElementById('btn-export-json');
+  const btnExportCsv = document.getElementById('btn-export-csv');
+
+  function triggerDownload(content, filename, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  if (btnExportJson) {
+    btnExportJson.addEventListener('click', async () => {
+      try {
+        let content = '';
+        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.export_servers_json === 'function') {
+          content = await window.pywebview.api.export_servers_json(searchQuery, activeCategory, sortAscending);
+        } else {
+          const visible = getVisibleServers();
+          content = JSON.stringify(visible, null, 2);
+        }
+        triggerDownload(content, 'discord-servers.json', 'application/json');
+      } catch (err) {
+        console.error('Failed to export JSON:', err);
+      }
+    });
+  }
+
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener('click', async () => {
+      try {
+        let content = '';
+        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.export_servers_csv === 'function') {
+          content = await window.pywebview.api.export_servers_csv(searchQuery, activeCategory, sortAscending);
+        } else {
+          const visible = getVisibleServers();
+          const headers = ['id', 'name', 'owner', 'category', 'icon_url'];
+          const lines = [headers.join(',')];
+          visible.forEach(s => {
+            const row = [s.id, `"${s.name.replace(/"/g, '""')}"`, s.owner, `"${s.category}"`, `"${s.icon_url || ''}"`];
+            lines.push(row.join(','));
+          });
+          content = lines.join('\n');
+        }
+        triggerDownload(content, 'discord-servers.csv', 'text/csv');
+      } catch (err) {
+        console.error('Failed to export CSV:', err);
+      }
+    });
+  }
+
   // Preview button & modal
   btnPreviewCleanup.addEventListener('click', () => {
     modalCountEl.textContent = selectedServerIds.size.toString();

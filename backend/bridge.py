@@ -67,3 +67,31 @@ class DesktopBridge:
         filtered = filter_servers(self._servers, query=query, category=category)
         return list(select_all_eligible(filtered))
 
+    def export_servers_json(
+        self,
+        query: Optional[str] = None,
+        category: Optional[str] = None,
+        ascending: bool = True,
+    ) -> str:
+        """Export currently filtered/sorted servers as JSON string."""
+        from backend.exports import export_to_json
+        from backend.servers.service import filter_servers, sort_servers
+
+        filtered = filter_servers(self._servers, query=query, category=category)
+        sorted_list = sort_servers(filtered, ascending=ascending)
+        return export_to_json(sorted_list)
+
+    def export_servers_csv(
+        self,
+        query: Optional[str] = None,
+        category: Optional[str] = None,
+        ascending: bool = True,
+    ) -> str:
+        """Export currently filtered/sorted servers as CSV string."""
+        from backend.exports import export_to_csv
+        from backend.servers.service import filter_servers, sort_servers
+
+        filtered = filter_servers(self._servers, query=query, category=category)
+        sorted_list = sort_servers(filtered, ascending=ascending)
+        return export_to_csv(sorted_list)
+

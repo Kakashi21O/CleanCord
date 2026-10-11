@@ -355,22 +355,111 @@ function setupEvents() {
     });
   }
 
-  // Preview button & modal
-  btnPreviewCleanup.addEventListener('click', () => {
-    modalCountEl.textContent = selectedServerIds.size.toString();
+  // Preview button & modal elements
+  const previewServerListEl = document.getElementById('preview-server-list');
+  const modalPreviewBody = document.getElementById('modal-preview-body');
+  const modalProgress = document.getElementById('modal-progress');
+  const modalProgressText = document.getElementById('modal-progress-text');
+  const modalResult = document.getElementById('modal-result');
+  const modalResultText = document.getElementById('modal-result-text');
+  const modalBtnCancel = document.getElementById('modal-btn-cancel');
+  const modalBtnConfirm = document.getElementById('modal-btn-confirm');
+
+  btnPreviewCleanup.addEventListener('click', async () => {
+    modalPreviewBody.style.display = 'block';
+    modalProgress.style.display = 'none';
+    modalResult.style.display = 'none';
+    modalBtnConfirm.style.display = 'inline-block';
+    modalBtnConfirm.disabled = false;
+    modalBtnCancel.textContent = 'Cancel';
+
+    const selectedList = Array.from(selectedServerIds);
+    modalCountEl.textContent = selectedList.length.toString();
+    previewServerListEl.innerHTML = '';
+
+    try {
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.preview_cleanup === 'function') {
+        const preview = await window.pywebview.api.preview_cleanup(selectedList);
+        if (preview && preview.servers_to_leave) {
+          modalCountEl.textContent = preview.eligible_count.toString();
+          preview.servers_to_leave.forEach(s => {
+            const li = document.createElement('li');
+            li.innerHTML = `❌ <strong>${escapeHtml(s.name)}</strong> <span style="color: var(--text-muted);">(${escapeHtml(s.category)})</span>`;
+            previewServerListEl.appendChild(li);
+          });
+          if (preview.protected_owner_count > 0) {
+            const li = document.createElement('li');
+            li.style.color = 'var(--state-warning)';
+            li.innerHTML = `🛡️ <em>${preview.protected_owner_count} owned server(s) protected</em>`;
+            previewServerListEl.appendChild(li);
+          }
+        }
+      } else {
+        selectedList.forEach(id => {
+          const s = allServers.find(x => x.id === id);
+          if (s) {
+            const li = document.createElement('li');
+            li.innerHTML = `❌ <strong>${escapeHtml(s.name)}</strong>`;
+            previewServerListEl.appendChild(li);
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Error generating preview:', err);
+    }
+
     previewModal.style.display = 'flex';
   });
 
-  modalBtnClose.addEventListener('click', () => {
+  modalBtnCancel.addEventListener('click', () => {
     previewModal.style.display = 'none';
   });
 
+  modalBtnConfirm.addEventListener('click', async () => {
+    modalBtnConfirm.disabled = true;
+    modalBtnCancel.disabled = true;
+    modalProgress.style.display = 'block';
+    modalPreviewBody.style.display = 'none';
+
+    const selectedList = Array.from(selectedServerIds);
+
+    try {
+      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.execute_cleanup === 'function') {
+        const result = await window.pywebview.api.execute_cleanup(selectedList);
+        modalProgress.style.display = 'none';
+        modalResult.style.display = 'block';
+        modalResultText.textContent = `Cleanup completed: ${result.success_count} server(s) left successfully (${result.failed_count} failed).`;
+        
+        // Clear selection and refresh list
+        selectedServerIds.clear();
+        await loadServers();
+      } else {
+        // Fallback simulation
+        modalProgress.style.display = 'none';
+        modalResult.style.display = 'block';
+        modalResultText.textContent = `Simulation: Left ${selectedList.length} servers.`;
+        selectedServerIds.clear();
+        renderList();
+      }
+    } catch (err) {
+      modalProgress.style.display = 'none';
+      modalResult.style.display = 'block';
+      modalResultText.style.color = 'var(--state-error)';
+      modalResultText.textContent = 'Cleanup operation failed. Please check your network or token.';
+    } finally {
+      modalBtnConfirm.style.display = 'none';
+      modalBtnCancel.disabled = false;
+      modalBtnCancel.textContent = 'Close';
+    }
+  });
+
   previewModal.addEventListener('click', (e) => {
-    if (e.target === previewModal) {
+    if (e.target === previewModal && !modalBtnCancel.disabled) {
       previewModal.style.display = 'none';
     }
   });
 }
+
 
 /**
  * Load server data from DesktopBridge or fallback

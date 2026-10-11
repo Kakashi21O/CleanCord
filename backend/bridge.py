@@ -1,5 +1,6 @@
-"""Bridge API exposed to pywebview frontend."""
-from typing import Any, Dict
+from typing import Any, Dict, List
+
+from backend.servers.mock_data import MOCK_SERVERS
 
 
 class DesktopBridge:
@@ -15,3 +16,8 @@ class DesktopBridge:
             "app_name": "Server Prune",
             "mode": "mock",
         }
+
+    def get_servers(self) -> List[Dict[str, Any]]:
+        """Return normalized list of servers (mock data during foundation)."""
+        return [dict(server) for server in MOCK_SERVERS]
+

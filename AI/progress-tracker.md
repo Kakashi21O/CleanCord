@@ -5,9 +5,9 @@
 - **Project:** Server Prune
 - **Phase:** Foundation
 - **Current branch:** `1-foundation`
-- **Current commit:** In progress (`1.2-desktop-window`)
-- **Next unit:** `1.3-static-ui`
-- **Merge status:** No feature branch merged yet
+- **Current commit:** `1.3-static-ui`
+- **Next unit:** Feature branch complete; awaiting user approval to merge
+- **Merge status:** Pending user approval
 
 > Branch and commit details must be updated from actual Git state. Never assume a branch, commit, or merge exists without verification.
 
@@ -19,13 +19,13 @@
 |---|---|---|
 | `1.1-project-setup` | Establish minimal directory structure, dependencies, and git baseline | Completed |
 | `1.2-desktop-window` | Launch pywebview desktop shell and bridge lifecycle | Completed |
-| `1.3-static-ui` | Implement light-themed UI shell with mock server data | Pending |
+| `1.3-static-ui` | Implement light-themed UI shell with mock server data | Completed |
 
 ### Branch Tracking
 
 | Branch | Development Status | User Approval | Merge to `master` |
 |---|---|---|---|
-| `1-foundation` | Not started | Pending | Not merged |
+| `1-foundation` | Completed | Pending | Not merged |
 | `2-server-list` | Not started | Pending | Not merged |
 | `3-local-utilities` | Not started | Pending | Not merged |
 | `4-discord-integration` | Not started | Pending | Not merged |

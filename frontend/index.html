@@ -8,17 +8,83 @@
 </head>
 <body>
   <div class="window-container">
+    <!-- Header -->
     <header class="header">
-      <h1 class="app-title">Server Prune</h1>
-      <div id="status-badge" class="status-badge">Connecting...</div>
-    </header>
-    <main class="main-content">
-      <div class="welcome-card">
-        <h2 class="welcome-title">Desktop Shell Initialized</h2>
-        <p class="welcome-desc">The pywebview container and desktop bridge are operational.</p>
+      <div class="header-brand">
+        <h1 class="app-title">Server Prune</h1>
+        <span id="status-badge" class="status-badge">Mock Mode</span>
       </div>
+    </header>
+
+    <!-- Filter & Search Bar -->
+    <section class="controls-section">
+      <div class="search-sort-row">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-input" 
+            placeholder="Search by server name or ID..." 
+            aria-label="Search servers"
+          >
+        </div>
+        <button id="sort-toggle-btn" class="btn-secondary" title="Sort alphabetically">
+          Sort: <span id="sort-order-label">A-Z</span>
+        </button>
+      </div>
+      <div class="category-chips" id="category-chips" role="group" aria-label="Category filters">
+        <button class="filter-chip active" data-category="ALL">All</button>
+        <button class="filter-chip" data-category="Gaming">Gaming</button>
+        <button class="filter-chip" data-category="Anime">Anime</button>
+        <button class="filter-chip" data-category="Development">Development</button>
+        <button class="filter-chip" data-category="Crypto / DeFi">Crypto / DeFi</button>
+        <button class="filter-chip" data-category="NFT">NFT</button>
+        <button class="filter-chip" data-category="Trading">Trading</button>
+        <button class="filter-chip" data-category="Other">Other</button>
+      </div>
+    </section>
+
+    <!-- Selection Toolbar -->
+    <section class="selection-toolbar">
+      <div class="selection-summary">
+        <span id="selection-count">0</span> servers selected to leave
+      </div>
+      <div class="selection-actions">
+        <button id="btn-select-all" class="btn-text">Select All</button>
+        <button id="btn-deselect-all" class="btn-text">Deselect All</button>
+      </div>
+    </section>
+
+    <!-- Server List Container -->
+    <main class="server-list-container" id="server-list" role="region" aria-label="Discord servers list">
+      <!-- Dynamically rendered server rows -->
     </main>
+
+    <!-- Footer / Action Bar -->
+    <footer class="footer-actions">
+      <div class="export-group">
+        <button id="btn-export-json" class="btn-secondary">Export JSON</button>
+        <button id="btn-export-csv" class="btn-secondary">Export CSV</button>
+      </div>
+      <button id="btn-preview-cleanup" class="btn-destructive" disabled>
+        Preview Cleanup
+      </button>
+    </footer>
   </div>
+
+  <!-- Confirmation / Preview Modal -->
+  <div id="preview-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <h3 id="modal-title" class="modal-title">Confirm Cleanup Preview</h3>
+      <p id="modal-desc" class="modal-desc">
+        You have selected <strong id="modal-count">0</strong> servers to leave. Actual server-leave actions remain disabled during this phase.
+      </p>
+      <div class="modal-footer">
+        <button id="modal-btn-close" class="btn-secondary">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

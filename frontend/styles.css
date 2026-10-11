@@ -564,65 +564,48 @@ body {
   opacity: 0.28;
 }
 
-/* Atmospheric Dark Cloud Silhouettes */
+/* Atmospheric Dark Cloud Silhouettes (combined via ponytail rule) */
 .cloud-layer {
   position: absolute;
   pointer-events: none;
-  background-repeat: no-repeat;
   filter: blur(22px);
+  border-radius: 50% 60% 40% 70% / 60% 50% 70% 40%;
 }
 
 .cloud-bg-1 {
-  width: 580px;
-  height: 440px;
-  top: 10%;
-  left: -140px;
+  width: 580px; height: 440px; top: 10%; left: -140px;
   background: radial-gradient(ellipse at 40% 50%, rgba(20, 26, 48, 0.75) 0%, rgba(15, 18, 32, 0.45) 55%, transparent 75%);
-  border-radius: 50% 60% 40% 70% / 60% 50% 70% 40%;
   opacity: 0.85;
 }
 
 .cloud-bg-2 {
-  width: 620px;
-  height: 500px;
-  bottom: -80px;
-  left: -110px;
+  width: 620px; height: 500px; bottom: -80px; left: -110px;
   background: radial-gradient(ellipse at 50% 60%, rgba(25, 32, 60, 0.7) 0%, rgba(14, 18, 34, 0.35) 60%, transparent 80%);
-  border-radius: 65% 55% 70% 45% / 55% 65% 45% 75%;
   opacity: 0.9;
 }
 
 .cloud-bg-3 {
-  width: 600px;
-  height: 520px;
-  top: 5%;
-  right: -150px;
+  width: 600px; height: 520px; top: 5%; right: -150px;
   background: radial-gradient(ellipse at 60% 40%, rgba(28, 26, 58, 0.65) 0%, rgba(15, 16, 32, 0.35) 60%, transparent 80%);
-  border-radius: 50% 70% 55% 65% / 65% 55% 70% 50%;
   opacity: 0.8;
 }
 
 .cloud-bg-4 {
-  width: 520px;
-  height: 420px;
-  bottom: -60px;
-  right: -90px;
+  width: 520px; height: 420px; bottom: -60px; right: -90px;
   background: radial-gradient(ellipse at 50% 50%, rgba(22, 28, 52, 0.6) 0%, rgba(12, 15, 28, 0.3) 60%, transparent 75%);
-  border-radius: 55% 65% 45% 75% / 70% 45% 65% 50%;
   opacity: 0.85;
 }
 
 .space-star {
   position: absolute;
   color: #5865f2;
-  font-size: 14px;
   opacity: 0.45;
   pointer-events: none;
 }
 
 .star-1 { top: 12%; left: 8%; font-size: 20px; color: #7289da; opacity: 0.65; }
 .star-2 { top: 20%; left: 32%; font-size: 13px; color: #8a9ff5; opacity: 0.35; }
-.star-3 { top: 42%; left: 42%; font-size: 11px; color: #5865f2; opacity: 0.4; }
+.star-3 { top: 42%; left: 42%; font-size: 11px; opacity: 0.4; }
 .star-4 { bottom: 16%; left: 7%; font-size: 22px; color: #6b7df0; opacity: 0.6; }
 .star-5 { bottom: 22%; right: 46%; font-size: 13px; opacity: 0.35; }
 
@@ -661,10 +644,10 @@ body {
 }
 
 .login-logo-box {
-  width: clamp(120px, 14vw, 170px);
-  height: clamp(90px, 11vw, 130px);
-  margin-bottom: clamp(18px, 2.5vh, 28px);
-  filter: drop-shadow(0 14px 32px rgba(88, 101, 242, 0.5));
+  width: clamp(130px, 15vw, 180px);
+  height: clamp(100px, 12vw, 140px);
+  margin-bottom: clamp(20px, 2.8vh, 32px);
+  filter: drop-shadow(0 16px 36px rgba(88, 101, 242, 0.52));
   animation: logoFloat 4s ease-in-out infinite alternate;
   display: flex;
   align-items: center;
@@ -683,11 +666,11 @@ body {
 }
 
 .brand-title {
-  font-size: clamp(36px, 4.4vw, 54px);
+  font-size: clamp(38px, 4.6vw, 56px);
   font-weight: 800;
   letter-spacing: -0.8px;
   color: #FFFFFF;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   line-height: 1.1;
   text-align: center;
 }
@@ -699,11 +682,12 @@ body {
 }
 
 .brand-subtitle {
-  font-size: clamp(18px, 2vw, 24px);
+  font-size: clamp(18px, 2.1vw, 24px);
   font-weight: 600;
   color: #c9d0e2;
-  margin-bottom: clamp(12px, 2vh, 18px);
+  margin-bottom: clamp(14px, 2.2vh, 20px);
   text-align: center;
+  letter-spacing: -0.2px;
 }
 
 .brand-description {

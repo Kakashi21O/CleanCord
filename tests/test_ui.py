@@ -73,6 +73,8 @@ class TestStaticUI(unittest.TestCase):
         self.assertIn('id="input-token-main"', html_content)
         self.assertIn('Login with Token', html_content)
         self.assertIn('Discord User Token', html_content)
+        self.assertIn('id="chk-remember-me"', html_content)
+        self.assertIn('Remember me', html_content)
         self.assertNotIn('id="input-email"', html_content)
         self.assertNotIn('id="input-password"', html_content)
         self.assertNotIn('id="tab-btn-email"', html_content)

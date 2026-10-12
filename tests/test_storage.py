@@ -55,5 +55,50 @@ class TestStorageManager(unittest.TestCase):
         self.assertEqual(self.storage.load_whitelist(), set())
 
 
+class TestWindowsCredentialStore(unittest.TestCase):
+    def test_credential_store_save_get_delete(self) -> None:
+        import sys
+        from backend.storage import WindowsCredentialStore
+
+        if sys.platform != "win32":
+            self.skipTest("Windows-only test")
+
+        test_target = "CleanCord_Unit_Test_Target"
+        store = WindowsCredentialStore(target_name=test_target)
+
+        # Ensure clean state
+        store.delete_credential()
+        self.assertIsNone(store.get_credential())
+
+        # Save credential
+        saved = store.save_credential("secret_discord_token_test_abc123")
+        self.assertTrue(saved)
+
+        # Retrieve credential
+        retrieved = store.get_credential()
+        self.assertEqual(retrieved, "secret_discord_token_test_abc123")
+
+        # Delete credential
+        deleted = store.delete_credential()
+        self.assertTrue(deleted)
+        self.assertIsNone(store.get_credential())
+
+    def test_bridge_logout_clears_credential(self) -> None:
+        from unittest.mock import MagicMock
+        from backend.bridge import DesktopBridge
+
+        mock_store = MagicMock()
+        mock_store.get_credential.return_value = "saved_token"
+
+        bridge = DesktopBridge(credential_store=mock_store)
+        saved = bridge.get_saved_credential()
+        self.assertTrue(saved["has_saved"])
+        self.assertEqual(saved["token"], "saved_token")
+
+        logout_res = bridge.logout()
+        self.assertTrue(logout_res["success"])
+        mock_store.delete_credential.assert_called_once()
+
+
 if __name__ == "__main__":
     unittest.main()

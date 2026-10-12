@@ -13,14 +13,21 @@ MIN_WIDTH = 800
 MIN_HEIGHT = 600
 
 
+def get_base_path() -> Path:
+    """Resolve base directory whether running from source or PyInstaller bundle."""
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent
+
+
 def get_frontend_index_path() -> Path:
     """Resolve absolute path to frontend index.html."""
-    return Path(__file__).resolve().parent / "frontend" / "index.html"
+    return get_base_path() / "frontend" / "index.html"
 
 
 def get_app_icon_path() -> Optional[Path]:
     """Resolve path to native CleanCord application icon."""
-    icon_path = Path(__file__).resolve().parent / "assets" / "cleancord.ico"
+    icon_path = get_base_path() / "assets" / "cleancord.ico"
     return icon_path if icon_path.is_file() else None
 
 

@@ -15,9 +15,16 @@ class DesktopBridge:
         self,
         raw_servers: Optional[List[Dict[str, Any]]] = None,
         api_client: Optional[Any] = None,
+        credential_store: Optional[Any] = None,
     ) -> None:
         self.api_client = api_client
         self.mode = "live" if api_client is not None else "mock"
+        if credential_store is not None:
+            self.credential_store = credential_store
+        else:
+            from backend.storage.credentials import WindowsCredentialStore
+            self.credential_store = WindowsCredentialStore()
+
         raw_list = raw_servers if raw_servers is not None else MOCK_SERVERS
         self._servers = [
             Server(
@@ -30,7 +37,7 @@ class DesktopBridge:
             for s in raw_list
         ]
 
-    def connect_token(self, token: str) -> Dict[str, Any]:
+    def connect_token(self, token: str, remember_me: bool = False) -> Dict[str, Any]:
         """Validate token and fetch user servers in live mode."""
         import re
 
@@ -78,6 +85,10 @@ class DesktopBridge:
         self.mode = "live"
         self._servers = normalized
 
+        # Handle Windows Credential Manager storage securely
+        if remember_me and hasattr(self, "credential_store") and self.credential_store:
+            self.credential_store.save_credential(secret=clean_token, username=username)
+
         return {
             "success": True,
             "username": username,
@@ -86,6 +97,21 @@ class DesktopBridge:
             "mode": self.mode,
         }
 
+    def get_saved_credential(self) -> Dict[str, Any]:
+        """Check for saved credential in Windows Credential Manager without logging it."""
+        if hasattr(self, "credential_store") and self.credential_store:
+            saved_token = self.credential_store.get_credential()
+            if saved_token:
+                return {"has_saved": True, "token": saved_token}
+        return {"has_saved": False, "token": None}
+
+    def logout(self) -> Dict[str, bool]:
+        """Log out user, reset live session, and securely delete saved credentials."""
+        if hasattr(self, "credential_store") and self.credential_store:
+            self.credential_store.delete_credential()
+        self.api_client = None
+        self.mode = "mock"
+        return {"success": True}
 
     def get_status(self) -> Dict[str, Any]:
         """Return system status and mode."""

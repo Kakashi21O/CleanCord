@@ -29,6 +29,7 @@ const modalCountEl = document.getElementById('modal-count');
 // DOM Elements - Login View
 const formTokenLogin = document.getElementById('form-token-login');
 const inputTokenMain = document.getElementById('input-token-main');
+const chkRememberMe = document.getElementById('chk-remember-me');
 const btnToggleToken = document.getElementById('btn-toggle-token');
 const btnTokenSubmit = document.getElementById('btn-token-submit');
 const tokenLoginError = document.getElementById('token-login-error');
@@ -183,8 +184,9 @@ function setupLoginEvents() {
       if (textSpan) textSpan.textContent = 'Connecting...';
 
       try {
+        const rememberMe = chkRememberMe ? chkRememberMe.checked : false;
         if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.connect_token === 'function') {
-          const res = await window.pywebview.api.connect_token(token);
+          const res = await window.pywebview.api.connect_token(token, rememberMe);
           if (res && res.success) {
             enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
             return;
@@ -264,9 +266,16 @@ function setupMenuEvents() {
     });
   }
 
-  // Log out action
+  // Log out action: securely delete saved credentials from Windows Credential Manager
   if (menuBtnLogout) {
-    menuBtnLogout.addEventListener('click', () => {
+    menuBtnLogout.addEventListener('click', async () => {
+      try {
+        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.logout === 'function') {
+          await window.pywebview.api.logout();
+        }
+      } catch (err) {
+        console.warn('Error during backend logout:', err);
+      }
       enterLoginView();
     });
   }
@@ -676,7 +685,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // App starts strictly locked at Login Screen (Demo Mode removed from default entry)
 });
 
-window.addEventListener('pywebviewready', () => {
+window.addEventListener('pywebviewready', async () => {
+  // Check if credentials exist in Windows Credential Manager and restore session
+  if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_saved_credential === 'function') {
+    try {
+      const saved = await window.pywebview.api.get_saved_credential();
+      if (saved && saved.has_saved && saved.token) {
+        // Automatically restore login state using saved secret
+        const res = await window.pywebview.api.connect_token(saved.token, true);
+        if (res && res.success) {
+          enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Auto-login from credential manager skipped:', err);
+    }
+  }
+
   // If backend was initialized with live token directly, auto-enter
   if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_status === 'function') {
     window.pywebview.api.get_status().then(status => {

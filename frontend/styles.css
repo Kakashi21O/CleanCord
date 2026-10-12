@@ -692,7 +692,7 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  padding: 11px 14px 11px 38px;
+  padding: 11px 40px 11px 38px;
   color: var(--text-primary);
   font-size: 13px;
   font-family: var(--font-sans);
@@ -709,6 +709,31 @@ body {
   color: var(--text-muted);
 }
 
+/* Hide Microsoft Edge / WebView2 native password reveal eye button */
+.auth-input::-ms-reveal,
+.auth-input::-ms-clear {
+  display: none;
+}
+
+.field-action-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s;
+}
+
+.field-action-btn:hover {
+  color: var(--text-primary);
+}
+
 .auth-error-box {
   background: var(--state-error-bg);
   border: 1px solid var(--state-error);
@@ -722,11 +747,11 @@ body {
 /* Primary Button */
 .btn-primary-gradient {
   background-color: var(--accent-primary);
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   border: none;
   border-radius: var(--radius-md);
-  padding: 12px 20px;
-  font-size: 14px;
+  padding: 13px 20px;
+  font-size: 15px;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
@@ -735,17 +760,34 @@ body {
   justify-content: center;
   gap: 8px;
   width: 100%;
+  text-decoration: none !important;
   transition: background-color 0.15s, opacity 0.15s;
   margin-top: 4px;
 }
 
 .btn-primary-gradient:hover:not(:disabled) {
   background-color: var(--accent-hover);
+  text-decoration: none !important;
+  color: #FFFFFF !important;
 }
 
 .btn-primary-gradient:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-auth-submit-text {
+  color: #FFFFFF !important;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none !important;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.btn-primary-gradient:hover .btn-auth-submit-text {
+  text-decoration: none !important;
+  color: #FFFFFF !important;
 }
 
 @media (max-width: 480px) {

@@ -27,24 +27,11 @@ const previewModal = document.getElementById('preview-modal');
 const modalCountEl = document.getElementById('modal-count');
 
 // DOM Elements - Login View
-const tabBtnEmail = document.getElementById('tab-btn-email');
-const tabBtnToken = document.getElementById('tab-btn-token');
-const paneEmail = document.getElementById('pane-email');
-const paneToken = document.getElementById('pane-token');
-const formEmailLogin = document.getElementById('form-email-login');
 const formTokenLogin = document.getElementById('form-token-login');
-const inputEmail = document.getElementById('input-email');
-const inputPassword = document.getElementById('input-password');
-const btnTogglePassword = document.getElementById('btn-toggle-password');
-const linkForgotPassword = document.getElementById('link-forgot-password');
-const btnEmailSubmit = document.getElementById('btn-email-submit');
-const emailError = document.getElementById('email-error');
-const btnSwitchToToken = document.getElementById('btn-switch-to-token');
 const inputTokenMain = document.getElementById('input-token-main');
 const btnToggleToken = document.getElementById('btn-toggle-token');
 const btnTokenSubmit = document.getElementById('btn-token-submit');
 const tokenLoginError = document.getElementById('token-login-error');
-const btnBackToEmail = document.getElementById('btn-back-to-email');
 const btnSwitchAccount = document.getElementById('btn-switch-account');
 
 // Fallback initial mock data if bridge is not ready
@@ -58,34 +45,6 @@ const INITIAL_FALLBACK_SERVERS = [
   { id: '1007', name: 'WallStreet Odds & Stocks', icon_url: null, owner: false, category: 'Trading' },
   { id: '1008', name: 'Coffee & Book Chill', icon_url: null, owner: false, category: 'Other' },
 ];
-
-/**
- * Switch to Token Login tab
- */
-function switchToTokenTab() {
-  tabBtnToken.classList.add('active');
-  tabBtnToken.setAttribute('aria-selected', 'true');
-  tabBtnEmail.classList.remove('active');
-  tabBtnEmail.setAttribute('aria-selected', 'false');
-  paneToken.style.display = 'block';
-  paneEmail.style.display = 'none';
-  if (tokenLoginError) tokenLoginError.style.display = 'none';
-  if (inputTokenMain) inputTokenMain.focus();
-}
-
-/**
- * Switch to Email Login tab
- */
-function switchToEmailTab() {
-  tabBtnEmail.classList.add('active');
-  tabBtnEmail.setAttribute('aria-selected', 'true');
-  tabBtnToken.classList.remove('active');
-  tabBtnToken.setAttribute('aria-selected', 'false');
-  paneEmail.style.display = 'block';
-  paneToken.style.display = 'none';
-  if (emailError) emailError.style.display = 'none';
-  if (inputEmail) inputEmail.focus();
-}
 
 /**
  * Reveal the main application screen after valid authentication
@@ -114,61 +73,18 @@ function enterLoginView() {
   loginView.style.display = 'flex';
   if (inputTokenMain) inputTokenMain.value = '';
   if (tokenLoginError) tokenLoginError.style.display = 'none';
-  if (emailError) emailError.style.display = 'none';
 }
 
 /**
  * Setup Login Screen Handlers
  */
 function setupLoginEvents() {
-  // Tabs
-  if (tabBtnEmail) tabBtnEmail.addEventListener('click', switchToEmailTab);
-  if (tabBtnToken) tabBtnToken.addEventListener('click', switchToTokenTab);
-  if (btnSwitchToToken) btnSwitchToToken.addEventListener('click', switchToTokenTab);
-  if (btnBackToEmail) btnBackToEmail.addEventListener('click', switchToEmailTab);
-
-  // Password visibility toggle
-  if (btnTogglePassword && inputPassword) {
-    btnTogglePassword.addEventListener('click', () => {
-      const isPwd = inputPassword.type === 'password';
-      inputPassword.type = isPwd ? 'text' : 'password';
-      btnTogglePassword.style.color = isPwd ? '#5865F2' : '#717b94';
-    });
-  }
-
   // Token visibility toggle
   if (btnToggleToken && inputTokenMain) {
     btnToggleToken.addEventListener('click', () => {
       const isPwd = inputTokenMain.type === 'password';
       inputTokenMain.type = isPwd ? 'text' : 'password';
-      btnToggleToken.style.color = isPwd ? '#5865F2' : '#717b94';
-    });
-  }
-
-  // Forgot password link
-  if (linkForgotPassword) {
-    linkForgotPassword.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Password reset must be performed directly on Discord (https://discord.com/login).');
-    });
-  }
-
-  // Email form submission: Security check
-  if (formEmailLogin) {
-    formEmailLogin.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = inputEmail.value.trim();
-      const pwd = inputPassword.value;
-
-      if (!email || !pwd) {
-        emailError.textContent = 'Please enter both email and password.';
-        emailError.style.display = 'block';
-        return;
-      }
-
-      // Security requirement: Never transmit passwords via custom third-party forms
-      emailError.innerHTML = '⚠️ <strong>Security Notice:</strong> Discord requires 2FA or User Token for third-party client sessions. Please use the <strong>Token Login</strong> tab for direct authorized access.';
-      emailError.style.display = 'block';
+      btnToggleToken.style.color = isPwd ? 'var(--accent-primary)' : 'var(--text-muted)';
     });
   }
 

@@ -12,201 +12,61 @@
   <!-- ========================================== -->
   <!-- 1. FULLSCREEN LOGIN VIEW (DISCORD THEMED) -->
   <!-- ========================================== -->
+  <!-- ========================================== -->
+  <!-- 1. TOKEN-ONLY LOGIN VIEW (CLEAN LIGHT THEME)-->
+  <!-- ========================================== -->
   <div id="login-view" class="login-page-container">
-    <!-- Ambient background decorations & atmospheric clouds -->
-    <div class="ambient-glow glow-top-left"></div>
-    <div class="ambient-glow glow-bottom-right"></div>
-    
-    <!-- Cloud silhouettes layered into background (inspired by reference art) -->
-    <div class="cloud-layer cloud-bg-1"></div>
-    <div class="cloud-layer cloud-bg-2"></div>
-    <div class="cloud-layer cloud-bg-3"></div>
-    <div class="cloud-layer cloud-bg-4"></div>
-
-    <div class="space-star star-1">✦</div>
-    <div class="space-star star-2">✦</div>
-    <div class="space-star star-3">★</div>
-    <div class="space-star star-4">✦</div>
-    <div class="space-star star-5">★</div>
-
     <div class="login-wrapper">
-      <!-- Left Column: Branding (50% with horizontal & vertical centering) -->
-      <section class="login-brand-col">
-        <div class="login-brand-content">
+      <div class="login-card">
+        <div class="login-header">
           <div class="login-logo-box">
             <svg class="discord-logo-svg" viewBox="0 0 127.14 96.36" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Discord Logo">
-              <defs>
-                <linearGradient id="discordBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#5865F2" />
-                  <stop offset="45%" stop-color="#6d7bf8" />
-                  <stop offset="100%" stop-color="#9d6efd" />
-                </linearGradient>
-                <filter id="clydeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#5865F2" flood-opacity="0.45" />
-                </filter>
-              </defs>
-              <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.12,53,91.08,65.69,84.69,65.69Z" fill="url(#discordBrandGrad)" filter="url(#clydeGlow)"/>
+              <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.12,53,91.08,65.69,84.69,65.69Z" fill="#5865F2"/>
             </svg>
           </div>
-          <h1 class="brand-title">Clean<span class="brand-accent">Cord</span></h1>
-          <p class="brand-subtitle">Discord Server Cleanup</p>
-          <p class="brand-description">
-            Manage and clean your Discord servers easily and efficiently.
+          <h2 class="auth-heading">Login with Token</h2>
+          <p class="auth-subheading">
+            Enter your Discord authorization token. Tokens are processed in local memory only.
           </p>
         </div>
-      </section>
 
-      <!-- Right Column: Login Card -->
-      <section class="login-card-col">
-        <div class="login-card">
-          <!-- Segmented Tab Switcher -->
-          <div class="tab-switcher" role="tablist" aria-label="Login methods">
-            <button id="tab-btn-email" class="tab-btn active" role="tab" aria-selected="true" aria-controls="pane-email">
-              Email Login
-            </button>
-            <button id="tab-btn-token" class="tab-btn" role="tab" aria-selected="false" aria-controls="pane-token">
-              Token Login
-            </button>
-          </div>
-
-          <!-- Email Login Pane -->
-          <div id="pane-email" class="auth-pane active" role="tabpanel">
-            <h2 class="auth-heading">Welcome Back</h2>
-            <p class="auth-subheading">Login to your Discord account to continue</p>
-
-            <form id="form-email-login" class="auth-form" onsubmit="return false;">
-              <!-- Email / Phone field -->
-              <div class="form-group">
-                <label for="input-email" class="form-label">Email or Phone Number</label>
-                <div class="input-with-icon">
-                  <span class="field-icon" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect width="20" height="16" x="2" y="4" rx="2"/>
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                    </svg>
-                  </span>
-                  <input 
-                    type="text" 
-                    id="input-email" 
-                    class="auth-input" 
-                    placeholder="Enter your email or phone number" 
-                    autocomplete="username"
-                    required
-                  >
-                </div>
-              </div>
-
-              <!-- Password field -->
-              <div class="form-group">
-                <label for="input-password" class="form-label">Password</label>
-                <div class="input-with-icon">
-                  <span class="field-icon" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                  </span>
-                  <input 
-                    type="password" 
-                    id="input-password" 
-                    class="auth-input" 
-                    placeholder="Enter your password" 
-                    autocomplete="current-password"
-                    required
-                  >
-                  <button type="button" id="btn-toggle-password" class="field-action-btn" aria-label="Toggle password visibility">
-                    <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  </button>
-                </div>
-                <div class="forgot-link-row">
-                  <a href="#" id="link-forgot-password" class="forgot-link">Forgot your password?</a>
-                </div>
-              </div>
-
-              <!-- Email Login Error -->
-              <div id="email-error" class="auth-error-box" style="display: none;" role="alert"></div>
-
-              <!-- Primary Submit Button -->
-              <button type="submit" id="btn-email-submit" class="btn-primary-gradient">
-                <span class="btn-text">Login</span>
-              </button>
-
-              <!-- Divider -->
-              <div class="auth-divider">
-                <span>or</span>
-              </div>
-
-              <!-- Switch to Token secondary button -->
-              <button type="button" id="btn-switch-to-token" class="btn-secondary-dark">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <form id="form-token-login" class="auth-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="input-token-main" class="form-label">Discord User Token</label>
+            <div class="input-with-icon">
+              <span class="field-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="7.5" cy="15.5" r="5.5"/>
                   <path d="m21 2-9.6 9.6"/>
                   <path d="m15.5 7.5 3 3L22 7l-3-3"/>
                 </svg>
-                Token Login
+              </span>
+              <input 
+                type="password" 
+                id="input-token-main" 
+                class="auth-input" 
+                placeholder="Paste your Discord token here" 
+                autocomplete="off"
+                required
+              >
+              <button type="button" id="btn-toggle-token" class="field-action-btn" aria-label="Toggle token visibility">
+                <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
               </button>
-            </form>
+            </div>
           </div>
 
-          <!-- Token Login Pane -->
-          <div id="pane-token" class="auth-pane" role="tabpanel" style="display: none;">
-            <h2 class="auth-heading">Login with Token</h2>
-            <p class="auth-subheading">
-              Paste your Discord authorization token directly. It is stored in local memory only.
-            </p>
+          <!-- Token Login Error -->
+          <div id="token-login-error" class="auth-error-box" style="display: none;" role="alert"></div>
 
-            <form id="form-token-login" class="auth-form" onsubmit="return false;">
-              <div class="form-group">
-                <label for="input-token-main" class="form-label">Discord User Token</label>
-                <div class="input-with-icon">
-                  <span class="field-icon" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="7.5" cy="15.5" r="5.5"/>
-                      <path d="m21 2-9.6 9.6"/>
-                      <path d="m15.5 7.5 3 3L22 7l-3-3"/>
-                    </svg>
-                  </span>
-                  <input 
-                    type="password" 
-                    id="input-token-main" 
-                    class="auth-input" 
-                    placeholder="Paste your Discord token here" 
-                    autocomplete="off"
-                    required
-                  >
-                  <button type="button" id="btn-toggle-token" class="field-action-btn" aria-label="Toggle token visibility">
-                    <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Token Login Error -->
-              <div id="token-login-error" class="auth-error-box" style="display: none;" role="alert"></div>
-
-              <!-- Token Submit -->
-              <button type="submit" id="btn-token-submit" class="btn-primary-gradient">
-                <span class="btn-text">Login with Token</span>
-              </button>
-
-              <!-- Back to Email -->
-              <div class="auth-divider">
-                <span>or</span>
-              </div>
-
-              <button type="button" id="btn-back-to-email" class="btn-secondary-dark">
-                ← Back to Email Login
-              </button>
-            </form>
-          </div>
-
-        </div>
-      </section>
+          <!-- Token Submit -->
+          <button type="submit" id="btn-token-submit" class="btn-primary-gradient">
+            <span class="btn-text">Login with Token</span>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 

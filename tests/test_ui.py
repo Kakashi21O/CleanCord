@@ -70,17 +70,13 @@ class TestStaticUI(unittest.TestCase):
 
         self.assertIn('id="login-view"', html_content)
         self.assertIn('id="app-view"', html_content)
-        self.assertIn('id="tab-btn-email"', html_content)
-        self.assertIn('id="tab-btn-token"', html_content)
-        self.assertIn('id="pane-email"', html_content)
-        self.assertIn('id="pane-token"', html_content)
-        self.assertIn('id="input-email"', html_content)
-        self.assertIn('id="input-password"', html_content)
         self.assertIn('id="input-token-main"', html_content)
-        self.assertIn('CleanCord', html_content)
-        self.assertIn('Discord Server Cleanup', html_content)
-        self.assertIn('Welcome Back', html_content)
         self.assertIn('Login with Token', html_content)
+        self.assertIn('Discord User Token', html_content)
+        self.assertNotIn('id="input-email"', html_content)
+        self.assertNotIn('id="input-password"', html_content)
+        self.assertNotIn('id="tab-btn-email"', html_content)
+        self.assertNotIn('id="tab-btn-token"', html_content)
 
 
 if __name__ == "__main__":

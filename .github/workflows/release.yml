@@ -1,0 +1,43 @@
+name: Build and Release CleanCord v1
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Standalone Executable
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed --name CleanCord --icon assets/cleancord.ico --add-data "frontend;frontend" --add-data "assets;assets" app.py
+
+      - name: Upload CleanCord.exe to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: CleanCord ${{ github.ref_name }}
+          files: dist/CleanCord.exe
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

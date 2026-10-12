@@ -54,13 +54,6 @@ function enterAppView(username, serverCount, avatarUrl) {
   loginView.style.display = 'none';
   appView.style.display = 'flex';
 
-  const statusBadge = document.getElementById('status-badge');
-  if (statusBadge) {
-    statusBadge.textContent = username ? `Connected (${username})` : 'Connected';
-    statusBadge.style.backgroundColor = 'var(--state-success-bg)';
-    statusBadge.style.color = 'var(--state-success)';
-  }
-
   // Update profile avatar & username
   const userDisplayName = document.getElementById('user-display-name');
   if (userDisplayName) {

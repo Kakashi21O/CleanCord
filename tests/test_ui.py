@@ -78,6 +78,18 @@ class TestStaticUI(unittest.TestCase):
         self.assertNotIn('id="tab-btn-email"', html_content)
         self.assertNotIn('id="tab-btn-token"', html_content)
 
+    def test_slide_over_menu_structure(self) -> None:
+        html_file = self.root / "frontend" / "index.html"
+        html_content = html_file.read_text(encoding="utf-8")
+
+        self.assertIn('id="btn-menu-trigger"', html_content)
+        self.assertIn('id="side-menu"', html_content)
+        self.assertIn('id="menu-btn-refresh"', html_content)
+        self.assertIn('id="menu-btn-logout"', html_content)
+        self.assertIn('About CleanCord', html_content)
+        self.assertIn('vj-m/CleanCord', html_content)
+        self.assertNotIn('id="btn-switch-account"', html_content)
+
 
 if __name__ == "__main__":
     unittest.main()

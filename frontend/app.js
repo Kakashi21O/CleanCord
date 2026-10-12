@@ -32,7 +32,18 @@ const inputTokenMain = document.getElementById('input-token-main');
 const btnToggleToken = document.getElementById('btn-toggle-token');
 const btnTokenSubmit = document.getElementById('btn-token-submit');
 const tokenLoginError = document.getElementById('token-login-error');
-const btnSwitchAccount = document.getElementById('btn-switch-account');
+
+// DOM Elements - Slide-over Menu
+const btnMenuTrigger = document.getElementById('btn-menu-trigger');
+const btnMenuClose = document.getElementById('btn-menu-close');
+const menuOverlay = document.getElementById('menu-overlay');
+const sideMenu = document.getElementById('side-menu');
+const menuUserName = document.getElementById('menu-user-name');
+const menuModeBadge = document.getElementById('menu-mode-badge');
+const menuAvatarImg = document.getElementById('menu-avatar-img');
+const menuAvatarFallback = document.getElementById('menu-avatar-fallback');
+const menuBtnRefresh = document.getElementById('menu-btn-refresh');
+const menuBtnLogout = document.getElementById('menu-btn-logout');
 
 // Fallback initial mock data if bridge is not ready
 const INITIAL_FALLBACK_SERVERS = [
@@ -47,24 +58,52 @@ const INITIAL_FALLBACK_SERVERS = [
 ];
 
 /**
+ * Slide-over Menu open/close utilities
+ */
+function openSideMenu() {
+  if (sideMenu && menuOverlay) {
+    sideMenu.classList.add('open');
+    menuOverlay.classList.add('open');
+    sideMenu.setAttribute('aria-hidden', 'false');
+    menuOverlay.setAttribute('aria-hidden', 'false');
+  }
+}
+
+function closeSideMenu() {
+  if (sideMenu && menuOverlay) {
+    sideMenu.classList.remove('open');
+    menuOverlay.classList.remove('open');
+    sideMenu.setAttribute('aria-hidden', 'true');
+    menuOverlay.setAttribute('aria-hidden', 'true');
+  }
+}
+
+/**
  * Reveal the main application screen after valid authentication
  */
-function enterAppView(username, serverCount, avatarUrl) {
+function enterAppView(username, serverCount, avatarUrl, mode = 'live') {
   isAuthenticated = true;
   loginView.style.display = 'none';
   appView.style.display = 'flex';
 
-  // Update profile avatar & username
-  const userDisplayName = document.getElementById('user-display-name');
-  if (userDisplayName) {
-    userDisplayName.textContent = username || '';
+  // Update profile name in slide-over menu
+  if (menuUserName) {
+    menuUserName.textContent = username || 'User';
   }
 
+  // Update live/demo mode badge in menu
+  if (menuModeBadge) {
+    const isLive = mode === 'live';
+    menuModeBadge.textContent = isLive ? 'Live Mode' : 'Demo Mode';
+    menuModeBadge.className = `menu-badge ${isLive ? 'badge-live' : 'badge-demo'}`;
+  }
+
+  // Update header avatar logo
   const avatarImg = document.getElementById('user-avatar-img');
   const fallbackIcon = document.getElementById('avatar-fallback-icon');
 
-  if (avatarImg && fallbackIcon) {
-    if (avatarUrl) {
+  if (avatarUrl) {
+    if (avatarImg && fallbackIcon) {
       avatarImg.onload = () => {
         avatarImg.style.display = 'block';
         fallbackIcon.style.display = 'none';
@@ -74,9 +113,26 @@ function enterAppView(username, serverCount, avatarUrl) {
         fallbackIcon.style.display = 'block';
       };
       avatarImg.src = avatarUrl;
-    } else {
+    }
+    if (menuAvatarImg && menuAvatarFallback) {
+      menuAvatarImg.onload = () => {
+        menuAvatarImg.style.display = 'block';
+        menuAvatarFallback.style.display = 'none';
+      };
+      menuAvatarImg.onerror = () => {
+        menuAvatarImg.style.display = 'none';
+        menuAvatarFallback.style.display = 'block';
+      };
+      menuAvatarImg.src = avatarUrl;
+    }
+  } else {
+    if (avatarImg && fallbackIcon) {
       avatarImg.style.display = 'none';
       fallbackIcon.style.display = 'block';
+    }
+    if (menuAvatarImg && menuAvatarFallback) {
+      menuAvatarImg.style.display = 'none';
+      menuAvatarFallback.style.display = 'block';
     }
   }
 
@@ -84,9 +140,10 @@ function enterAppView(username, serverCount, avatarUrl) {
 }
 
 /**
- * Return to login view (logout / switch account)
+ * Return to login view (logout)
  */
 function enterLoginView() {
+  closeSideMenu();
   isAuthenticated = false;
   appView.style.display = 'none';
   loginView.style.display = 'flex';
@@ -129,7 +186,7 @@ function setupLoginEvents() {
         if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.connect_token === 'function') {
           const res = await window.pywebview.api.connect_token(token);
           if (res && res.success) {
-            enterAppView(res.username, res.server_count, res.avatar_url);
+            enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
             return;
           } else {
             tokenLoginError.textContent = (res && res.error) ? res.error : 'Invalid token or unable to connect to Discord.';
@@ -137,7 +194,7 @@ function setupLoginEvents() {
           }
         } else {
           // If bridge not loaded in browser preview or tests
-          enterAppView('Preview User', 8, null);
+          enterAppView('Preview User', 8, null, 'demo');
           return;
         }
       } catch (err) {
@@ -149,10 +206,67 @@ function setupLoginEvents() {
       }
     });
   }
+}
 
-  // Switch account button in header
-  if (btnSwitchAccount) {
-    btnSwitchAccount.addEventListener('click', () => {
+/**
+ * Setup Slide-Over Menu Handlers
+ */
+function setupMenuEvents() {
+  if (btnMenuTrigger) {
+    btnMenuTrigger.addEventListener('click', () => {
+      openSideMenu();
+    });
+  }
+
+  if (btnMenuClose) {
+    btnMenuClose.addEventListener('click', () => {
+      closeSideMenu();
+    });
+  }
+
+  if (menuOverlay) {
+    menuOverlay.addEventListener('click', () => {
+      closeSideMenu();
+    });
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sideMenu && sideMenu.classList.contains('open')) {
+      closeSideMenu();
+    }
+  });
+
+  // Refresh servers action
+  if (menuBtnRefresh) {
+    menuBtnRefresh.addEventListener('click', async () => {
+      closeSideMenu();
+      const label = menuBtnRefresh.querySelector('.menu-item-label');
+      const origText = label ? label.textContent : 'Refresh Servers';
+      if (label) label.textContent = 'Refreshing...';
+
+      try {
+        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.refresh_servers === 'function') {
+          const refreshed = await window.pywebview.api.refresh_servers();
+          if (Array.isArray(refreshed)) {
+            allServers = refreshed;
+            selectedServerIds.clear();
+            renderList();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Backend refresh_servers failed, reloading server list:', err);
+      } finally {
+        if (label) label.textContent = origText;
+      }
+      await loadServers();
+    });
+  }
+
+  // Log out action
+  if (menuBtnLogout) {
+    menuBtnLogout.addEventListener('click', () => {
       enterLoginView();
     });
   }
@@ -302,6 +416,7 @@ function escapeHtml(text) {
  */
 function setupEvents() {
   setupLoginEvents();
+  setupMenuEvents();
 
   // Search input
   if (searchInputEl) {

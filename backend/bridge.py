@@ -97,6 +97,14 @@ class DesktopBridge:
 
 
 
+    def refresh_servers(self) -> List[Dict[str, Any]]:
+        """Fetch fresh server list from Discord API in live mode, or reset mock servers."""
+        if self.mode == "live" and self.api_client is not None:
+            from backend.servers.normalizer import normalize_guilds_batch
+            raw_guilds = self.api_client.fetch_all_guilds()
+            self._servers = normalize_guilds_batch(raw_guilds)
+        return [server.to_dict() for server in self._servers]
+
     def get_servers(
         self,
         query: Optional[str] = None,

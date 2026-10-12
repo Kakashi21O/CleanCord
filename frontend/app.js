@@ -118,12 +118,10 @@ function setupLoginEvents() {
   if (formTokenLogin) {
     formTokenLogin.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const rawToken = inputTokenMain.value || '';
-      // Strip any characters not matching a-zA-Z0-9._-
-      const token = rawToken.replace(/[^a-zA-Z0-9._-]/g, '');
+      const token = (inputTokenMain.value || '').trim();
 
       if (!token) {
-        tokenLoginError.textContent = 'Please enter a valid Discord authorization token.';
+        tokenLoginError.textContent = 'Please enter a Discord authorization token.';
         tokenLoginError.style.display = 'block';
         return;
       }

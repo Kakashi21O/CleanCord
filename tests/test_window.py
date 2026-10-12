@@ -92,10 +92,34 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertFalse(res_empty["success"])
         self.assertIn("Token cannot be empty", res_empty["error"])
 
-        # Invalid characters only should be stripped to empty and rejected
+        # Disallowed characters only should be stripped to empty and rejected
         res_invalid = bridge.connect_token("   $$$%%%   ")
         self.assertFalse(res_invalid["success"])
         self.assertIn("Token cannot be empty", res_invalid["error"])
+
+    @patch("backend.integrations.client.DiscordApiClient.fetch_all_guilds")
+    @patch("requests.get")
+    def test_token_normalization_strips_unnecessary_characters(
+        self,
+        mock_get: MagicMock,
+        mock_guilds: MagicMock,
+    ) -> None:
+        mock_guilds.return_value = []
+        mock_resp = MagicMock()
+        mock_resp.ok = True
+        mock_resp.json.return_value = {"id": "123", "username": "TestUser", "avatar": None}
+        mock_get.return_value = mock_resp
+
+        bridge = DesktopBridge()
+        # Accidental surrounding quotes, spaces, and disallowed characters
+        raw_token = '  "my.clean_token-123!@#"  '
+        res = bridge.connect_token(raw_token)
+        self.assertTrue(res["success"])
+
+        # Check authorization header used in requests.get
+        args, kwargs = mock_get.call_args
+        auth_header = kwargs.get("headers", {}).get("Authorization")
+        self.assertEqual(auth_header, "my.clean_token-123")
 
     def test_bridge_preview_and_execute_cleanup(self) -> None:
         bridge = DesktopBridge()

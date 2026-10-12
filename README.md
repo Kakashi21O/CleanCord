@@ -2,7 +2,15 @@
 
 A lightweight Windows desktop application for viewing, searching, and leaving Discord servers through a clean, minimal interface.
 
-> **Demo Mode** is available out of the box — no token needed to explore the UI. Connect your Discord token to work with real servers.
+[![Download CleanCord](https://img.shields.io/badge/Download-CleanCord.exe%20(v1.0.0)-blue?style=for-the-badge&logo=windows)](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe)
+
+## 📥 Download & Install (For Users)
+
+Anyone can download and run CleanCord on Windows without installing Python:
+
+1. Go to the [**CleanCord v1.0.0 Release**](https://github.com/Kakashi21O/CleanCord/releases/tag/v1.0.0) or click [**Direct Download (CleanCord.exe)**](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe).
+2. Download `CleanCord.exe`.
+3. Double-click `CleanCord.exe` to run the app immediately (no installation or setup required).
 
 ---
 

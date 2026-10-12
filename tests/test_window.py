@@ -119,6 +119,50 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertIn(owned_server["id"], remaining_ids)
 
 
+    @patch("backend.integrations.client.DiscordApiClient.fetch_all_guilds")
+    @patch("requests.get")
+    def test_connect_token_avatar_retrieval(
+        self,
+        mock_get: MagicMock,
+        mock_guilds: MagicMock,
+    ) -> None:
+        mock_guilds.return_value = []
+        bridge = DesktopBridge()
+
+        # 1. Custom avatar returns CDN URL
+        mock_resp = MagicMock()
+        mock_resp.ok = True
+        mock_resp.json.return_value = {
+            "id": "123456789",
+            "username": "DiscordTester",
+            "avatar": "abcdef123456",
+        }
+        mock_get.return_value = mock_resp
+
+        res = bridge.connect_token("valid_token_123")
+        self.assertTrue(res["success"])
+        self.assertEqual(res["username"], "DiscordTester")
+        self.assertEqual(
+            res["avatar_url"],
+            "https://cdn.discordapp.com/avatars/123456789/abcdef123456.png",
+        )
+
+        # 2. User without custom avatar returns avatar_url None (fallback D logo)
+        mock_resp_no_avatar = MagicMock()
+        mock_resp_no_avatar.ok = True
+        mock_resp_no_avatar.json.return_value = {
+            "id": "123456789",
+            "username": "NoAvatarUser",
+            "avatar": None,
+        }
+        mock_get.return_value = mock_resp_no_avatar
+
+        res_no_avatar = bridge.connect_token("valid_token_123")
+        self.assertTrue(res_no_avatar["success"])
+        self.assertEqual(res_no_avatar["username"], "NoAvatarUser")
+        self.assertIsNone(res_no_avatar["avatar_url"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

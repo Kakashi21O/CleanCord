@@ -38,14 +38,39 @@ class DesktopBridge:
         if not clean_token:
             return {"success": False, "error": "Token cannot be empty or contain invalid characters"}
 
+        import requests
+
+        avatar_url = None
+        username = "Unknown"
+
+        try:
+            response = requests.get(
+                "https://discord.com/api/v10/users/@me",
+                headers={"Authorization": clean_token},
+                timeout=10,
+            )
+            if response.ok:
+                user = response.json()
+                username = user.get("username", "Unknown")
+                user_id = user.get("id")
+                avatar_hash = user.get("avatar")
+                if user_id and avatar_hash:
+                    avatar_url = (
+                        f"https://cdn.discordapp.com/avatars/"
+                        f"{user_id}/{avatar_hash}.png"
+                    )
+            elif response.status_code == 401:
+                return {"success": False, "error": "Invalid or expired Discord token"}
+            else:
+                return {"success": False, "error": "Invalid or expired Discord token"}
+        except requests.RequestException:
+            # If request fails, fall back to client verification or return error
+            return {"success": False, "error": "Failed to connect to Discord API"}
+
         from backend.integrations.client import DiscordApiClient
         from backend.servers.normalizer import normalize_guilds_batch
 
         client = DiscordApiClient(token=clean_token)
-        user = client.get_current_user()
-        if not user:
-            return {"success": False, "error": "Invalid or expired Discord token"}
-
         raw_guilds = client.fetch_all_guilds()
         normalized = normalize_guilds_batch(raw_guilds)
 
@@ -55,7 +80,8 @@ class DesktopBridge:
 
         return {
             "success": True,
-            "username": user.get("username", "Unknown"),
+            "username": username,
+            "avatar_url": avatar_url,
             "server_count": len(self._servers),
             "mode": self.mode,
         }

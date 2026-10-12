@@ -49,7 +49,7 @@ const INITIAL_FALLBACK_SERVERS = [
 /**
  * Reveal the main application screen after valid authentication
  */
-function enterAppView(username, serverCount) {
+function enterAppView(username, serverCount, avatarUrl) {
   isAuthenticated = true;
   loginView.style.display = 'none';
   appView.style.display = 'flex';
@@ -59,6 +59,32 @@ function enterAppView(username, serverCount) {
     statusBadge.textContent = username ? `Connected (${username})` : 'Connected';
     statusBadge.style.backgroundColor = 'var(--state-success-bg)';
     statusBadge.style.color = 'var(--state-success)';
+  }
+
+  // Update profile avatar & username
+  const userDisplayName = document.getElementById('user-display-name');
+  if (userDisplayName) {
+    userDisplayName.textContent = username || '';
+  }
+
+  const avatarImg = document.getElementById('user-avatar-img');
+  const fallbackIcon = document.getElementById('avatar-fallback-icon');
+
+  if (avatarImg && fallbackIcon) {
+    if (avatarUrl) {
+      avatarImg.onload = () => {
+        avatarImg.style.display = 'block';
+        fallbackIcon.style.display = 'none';
+      };
+      avatarImg.onerror = () => {
+        avatarImg.style.display = 'none';
+        fallbackIcon.style.display = 'block';
+      };
+      avatarImg.src = avatarUrl;
+    } else {
+      avatarImg.style.display = 'none';
+      fallbackIcon.style.display = 'block';
+    }
   }
 
   loadServers();
@@ -111,7 +137,7 @@ function setupLoginEvents() {
         if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.connect_token === 'function') {
           const res = await window.pywebview.api.connect_token(token);
           if (res && res.success) {
-            enterAppView(res.username, res.server_count);
+            enterAppView(res.username, res.server_count, res.avatar_url);
             return;
           } else {
             tokenLoginError.textContent = (res && res.error) ? res.error : 'Invalid token or unable to connect to Discord.';
@@ -119,7 +145,7 @@ function setupLoginEvents() {
           }
         } else {
           // If bridge not loaded in browser preview or tests
-          enterAppView('Preview User', 8);
+          enterAppView('Preview User', 8, null);
           return;
         }
       } catch (err) {

@@ -89,7 +89,7 @@ class TestStaticUI(unittest.TestCase):
         self.assertIn('id="menu-btn-refresh"', html_content)
         self.assertIn('id="menu-btn-logout"', html_content)
         self.assertIn('About CleanCord', html_content)
-        self.assertIn('vj-m/CleanCord', html_content)
+        self.assertIn('Kakashi21O/CleanCord', html_content)
         self.assertNotIn('id="btn-switch-account"', html_content)
 
 

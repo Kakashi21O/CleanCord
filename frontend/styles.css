@@ -692,7 +692,7 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  padding: 11px 40px 11px 38px;
+  padding: 11px 14px 11px 38px;
   color: var(--text-primary);
   font-size: 13px;
   font-family: var(--font-sans);
@@ -707,31 +707,6 @@ body {
 
 .auth-input::placeholder {
   color: var(--text-muted);
-}
-
-/* Hide Microsoft Edge / WebView2 native password reveal eye button */
-.auth-input::-ms-reveal,
-.auth-input::-ms-clear {
-  display: none;
-}
-
-.field-action-btn {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  transition: color 0.15s;
-}
-
-.field-action-btn:hover {
-  color: var(--text-primary);
 }
 
 .auth-error-box {

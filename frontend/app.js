@@ -29,7 +29,6 @@ const modalCountEl = document.getElementById('modal-count');
 // DOM Elements - Login View
 const formTokenLogin = document.getElementById('form-token-login');
 const inputTokenMain = document.getElementById('input-token-main');
-const btnToggleToken = document.getElementById('btn-toggle-token');
 const btnTokenSubmit = document.getElementById('btn-token-submit');
 const tokenLoginError = document.getElementById('token-login-error');
 const btnSwitchAccount = document.getElementById('btn-switch-account');
@@ -105,15 +104,6 @@ function enterLoginView() {
  * Setup Login Screen Handlers
  */
 function setupLoginEvents() {
-  // Token visibility toggle
-  if (btnToggleToken && inputTokenMain) {
-    btnToggleToken.addEventListener('click', () => {
-      const isPwd = inputTokenMain.type === 'password';
-      inputTokenMain.type = isPwd ? 'text' : 'password';
-      btnToggleToken.style.color = isPwd ? 'var(--accent-primary)' : 'var(--text-muted)';
-    });
-  }
-
   // Token form submission
   if (formTokenLogin) {
     formTokenLogin.addEventListener('submit', async (e) => {

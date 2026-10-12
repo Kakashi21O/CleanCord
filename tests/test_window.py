@@ -42,8 +42,15 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertEqual(kwargs.get("js_api"), bridge)
         self.assertEqual(kwargs.get("width"), app.DEFAULT_WIDTH)
         self.assertEqual(kwargs.get("height"), app.DEFAULT_HEIGHT)
-        self.assertEqual(kwargs.get("min_size"), (app.MIN_WIDTH, app.MIN_HEIGHT))
+        self.assertEqual(kwargs.get("background_color"), "#FFFFFF")
         self.assertEqual(window, mock_window)
+
+    @patch("ctypes.windll.dwmapi.DwmSetWindowAttribute")
+    def test_apply_native_titlebar_theme(self, mock_set_attr: MagicMock) -> None:
+        mock_win = MagicMock()
+        mock_win.native.Handle.ToInt32.return_value = 12345
+        app.apply_native_titlebar_theme(mock_win)
+        self.assertGreaterEqual(mock_set_attr.call_count, 1)
 
     @patch("webview.start")
     @patch("app.create_window")

@@ -709,6 +709,12 @@ body {
   color: var(--text-muted);
 }
 
+/* Hide Microsoft Edge / WebView2 native password reveal eye button */
+.auth-input::-ms-reveal,
+.auth-input::-ms-clear {
+  display: none;
+}
+
 .field-action-btn {
   position: absolute;
   right: 10px;

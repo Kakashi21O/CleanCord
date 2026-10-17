@@ -108,7 +108,7 @@ class TestStaticUI(unittest.TestCase):
         self.assertIn('splash-logo-circle', html_content)
 
         # CSS circular animation
-        self.assertIn('logoCircularMotion', css_content)
+        self.assertIn('logoRotateInPlace', css_content)
         self.assertIn('orbitRingSpin', css_content)
 
         # JS startup quotes

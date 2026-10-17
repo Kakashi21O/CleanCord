@@ -1175,7 +1175,7 @@ body {
   box-shadow: 0 0 10px rgba(88, 101, 242, 0.7);
 }
 
-/* Discord logo moving in a smooth circle */
+/* Discord logo circle: stable in the center */
 .splash-logo-circle {
   width: 82px;
   height: 82px;
@@ -1185,31 +1185,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: logoCircularMotion 3.2s ease-in-out infinite;
   z-index: 2;
+  position: relative;
 }
 
+/* Discord logo rotating smoothly in its own place */
 .splash-discord-svg {
   width: 48px;
   height: 48px;
   filter: drop-shadow(0 2px 4px rgba(88, 101, 242, 0.3));
+  transform-origin: center center;
+  animation: logoRotateInPlace 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-@keyframes logoCircularMotion {
+@keyframes logoRotateInPlace {
   0% {
-    transform: rotate(0deg) translate(9px) rotate(0deg) scale(1);
-  }
-  25% {
-    transform: rotate(90deg) translate(9px) rotate(-90deg) scale(1.03);
-  }
-  50% {
-    transform: rotate(180deg) translate(9px) rotate(-180deg) scale(1);
-  }
-  75% {
-    transform: rotate(270deg) translate(9px) rotate(-270deg) scale(0.97);
+    transform: rotate(0deg);
   }
   100% {
-    transform: rotate(360deg) translate(9px) rotate(-360deg) scale(1);
+    transform: rotate(360deg);
   }
 }
 

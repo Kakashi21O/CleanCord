@@ -1175,7 +1175,7 @@ body {
   box-shadow: 0 0 10px rgba(88, 101, 242, 0.7);
 }
 
-/* Discord logo circle: stable in the center */
+/* Discord logo circle: stable in the center with pop-up / pop-down pulse */
 .splash-logo-circle {
   width: 82px;
   height: 82px;
@@ -1187,9 +1187,29 @@ body {
   justify-content: center;
   z-index: 2;
   position: relative;
+  animation: circlePopPulse 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-/* Discord logo rotating smoothly in its own place */
+@keyframes circlePopPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(88, 101, 242, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+  25% {
+    transform: scale(1.08); /* Pop up big */
+    box-shadow: 0 14px 32px rgba(88, 101, 242, 0.28), 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: scale(0.92); /* Pop down small */
+    box-shadow: 0 4px 14px rgba(88, 101, 242, 0.12), 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+  75% {
+    transform: scale(1.08); /* Pop up big */
+    box-shadow: 0 14px 32px rgba(88, 101, 242, 0.28), 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Discord logo rotating smoothly in its own place with big & small pop-up/pop-down scaling */
 .splash-discord-svg {
   width: 48px;
   height: 48px;
@@ -1200,10 +1220,19 @@ body {
 
 @keyframes logoRotateInPlace {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.22); /* Pop up big */
+  }
+  50% {
+    transform: rotate(180deg) scale(0.84); /* Pop down small */
+  }
+  75% {
+    transform: rotate(270deg) scale(1.22); /* Pop up big */
   }
   100% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) scale(1);
   }
 }
 

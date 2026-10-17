@@ -1106,4 +1106,195 @@ body {
   }
 }
 
+/* ==========================================================================
+   Startup Loading / Splash Screen
+   ========================================================================== */
+.splash-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 1;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+}
+
+.splash-container.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 440px;
+  width: 90%;
+  padding: 32px 24px;
+}
+
+/* Stage for circular motion and orbit */
+.splash-logo-stage {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Outer circular orbit track and rotating dot */
+.splash-orbit-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px dashed rgba(88, 101, 242, 0.25);
+  animation: orbitRingSpin 4s linear infinite;
+  box-sizing: border-box;
+}
+
+.splash-orbit-dot {
+  position: absolute;
+  top: -6px;
+  left: calc(50% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(88, 101, 242, 0.7);
+}
+
+/* Discord logo moving in a smooth circle */
+.splash-logo-circle {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(88, 101, 242, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: logoCircularMotion 3.2s ease-in-out infinite;
+  z-index: 2;
+}
+
+.splash-discord-svg {
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 2px 4px rgba(88, 101, 242, 0.3));
+}
+
+@keyframes logoCircularMotion {
+  0% {
+    transform: rotate(0deg) translate(9px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) translate(9px) rotate(-90deg) scale(1.03);
+  }
+  50% {
+    transform: rotate(180deg) translate(9px) rotate(-180deg) scale(1);
+  }
+  75% {
+    transform: rotate(270deg) translate(9px) rotate(-270deg) scale(0.97);
+  }
+  100% {
+    transform: rotate(360deg) translate(9px) rotate(-360deg) scale(1);
+  }
+}
+
+@keyframes orbitRingSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.splash-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.splash-status-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin: 0;
+}
+
+.splash-quote-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.splash-quote-text.quote-fading {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+/* Subtle progress bar */
+.splash-progress-track {
+  width: 160px;
+  height: 4px;
+  background-color: var(--border-default);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+  position: relative;
+}
+
+.splash-progress-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, var(--accent-primary), #7983F5);
+  border-radius: 999px;
+  animation: splashProgressIndeterminate 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes splashProgressIndeterminate {
+  0% {
+    left: -40%;
+    width: 30%;
+  }
+  50% {
+    left: 30%;
+    width: 50%;
+  }
+  100% {
+    left: 100%;
+    width: 30%;
+  }
+}
+
+
 

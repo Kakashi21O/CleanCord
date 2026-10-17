@@ -11,6 +11,76 @@ let activeCategory = 'ALL';
 let sortAscending = true;
 let isAuthenticated = false;
 
+// DOM Elements - Startup Splash View
+const loadingView = document.getElementById('loading-view');
+const splashStatusTitle = document.getElementById('splash-status-title');
+const splashQuoteText = document.getElementById('splash-quote-text');
+
+// Discord-themed Startup Quotes & Did You Know Tips
+const DISCORD_LOADING_QUOTES = [
+  "DID YOU KNOW: You can press Ctrl + K to jump between channels and servers.",
+  "DID YOU KNOW: Server owners must transfer ownership before leaving a server.",
+  "DID YOU KNOW: Discord's iconic robot mascot is named Clyde.",
+  "DID YOU KNOW: CleanCord lets you organize and leave servers in bulk with one click.",
+  "DID YOU KNOW: Discord was founded back in 2015 to bring gaming communities together.",
+  "DID YOU KNOW: CleanCord processes your Discord tokens in local memory only.",
+  "Connecting to Discord Gateway...",
+  "Waking up the hamsters in the wheel...",
+  "Checking saved session in credential manager...",
+  "Polishing server and guild icons...",
+  "Reticulating splines...",
+  "Spinning up websockets...",
+  "Assembling guild cache...",
+  "Almost ready to roll..."
+];
+
+let quoteInterval = null;
+let quoteIndex = 0;
+
+function startQuoteRotator() {
+  if (!splashQuoteText) return;
+  quoteInterval = setInterval(() => {
+    quoteIndex = (quoteIndex + 1) % DISCORD_LOADING_QUOTES.length;
+    splashQuoteText.classList.add('quote-fading');
+    setTimeout(() => {
+      splashQuoteText.textContent = DISCORD_LOADING_QUOTES[quoteIndex];
+      splashQuoteText.classList.remove('quote-fading');
+    }, 250);
+  }, 2400);
+}
+
+function stopQuoteRotator() {
+  if (quoteInterval) {
+    clearInterval(quoteInterval);
+    quoteInterval = null;
+  }
+}
+
+function hideLoadingView(targetView) {
+  stopQuoteRotator();
+  if (loadingView) {
+    loadingView.classList.add('fade-out');
+    setTimeout(() => {
+      loadingView.style.display = 'none';
+      if (targetView === 'app') {
+        appView.style.display = 'flex';
+        loginView.style.display = 'none';
+      } else if (targetView === 'login') {
+        loginView.style.display = 'flex';
+        appView.style.display = 'none';
+      }
+    }, 350);
+  } else {
+    if (targetView === 'app') {
+      appView.style.display = 'flex';
+      loginView.style.display = 'none';
+    } else if (targetView === 'login') {
+      loginView.style.display = 'flex';
+      appView.style.display = 'none';
+    }
+  }
+}
+
 // DOM Elements - App View
 const appView = document.getElementById('app-view');
 const loginView = document.getElementById('login-view');
@@ -84,7 +154,7 @@ function closeSideMenu() {
  */
 function enterAppView(username, serverCount, avatarUrl, mode = 'live') {
   isAuthenticated = true;
-  loginView.style.display = 'none';
+  hideLoadingView('app');
   appView.style.display = 'flex';
 
   // Update profile name in slide-over menu
@@ -146,6 +216,7 @@ function enterAppView(username, serverCount, avatarUrl, mode = 'live') {
 function enterLoginView() {
   closeSideMenu();
   isAuthenticated = false;
+  if (loadingView) loadingView.style.display = 'none';
   appView.style.display = 'none';
   loginView.style.display = 'flex';
   if (inputTokenMain) inputTokenMain.value = '';
@@ -679,22 +750,38 @@ async function loadServers() {
   renderList();
 }
 
-// Initialization
-document.addEventListener('DOMContentLoaded', () => {
-  setupEvents();
-  // App starts strictly locked at Login Screen (Demo Mode removed from default entry)
-});
+// Startup & Authentication Lifecycle
+let appInitialized = false;
 
-window.addEventListener('pywebviewready', async () => {
+async function performStartupSessionCheck() {
+  if (appInitialized) return;
+  const startTime = Date.now();
+  const MIN_SPLASH_TIME = 900; // ms to ensure smooth Discord loading experience
+
+  const finishStartup = (destination, callback) => {
+    if (appInitialized) return;
+    appInitialized = true;
+    const elapsed = Date.now() - startTime;
+    const remaining = Math.max(0, MIN_SPLASH_TIME - elapsed);
+    setTimeout(() => {
+      if (callback) callback();
+      hideLoadingView(destination);
+    }, remaining);
+  };
+
   // Check if credentials exist in Windows Credential Manager and restore session
   if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_saved_credential === 'function') {
     try {
+      if (splashStatusTitle) splashStatusTitle.textContent = 'CHECKING SAVED SESSION...';
       const saved = await window.pywebview.api.get_saved_credential();
       if (saved && saved.has_saved && saved.token) {
-        // Automatically restore login state using saved secret
+        if (splashStatusTitle) splashStatusTitle.textContent = 'CONNECTING TO DISCORD...';
         const res = await window.pywebview.api.connect_token(saved.token, true);
         if (res && res.success) {
-          enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
+          if (splashStatusTitle) splashStatusTitle.textContent = 'PREPARING SERVERS...';
+          finishStartup('app', () => {
+            enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
+          });
           return;
         }
       }
@@ -705,10 +792,35 @@ window.addEventListener('pywebviewready', async () => {
 
   // If backend was initialized with live token directly, auto-enter
   if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_status === 'function') {
-    window.pywebview.api.get_status().then(status => {
+    try {
+      const status = await window.pywebview.api.get_status();
       if (status && status.mode === 'live') {
-        enterAppView('Connected User');
+        finishStartup('app', () => {
+          enterAppView('Connected User');
+        });
+        return;
       }
-    }).catch(() => {});
+    } catch (e) {}
   }
+
+  // If no saved credential or auto-login failed, transition smoothly to token login view without any flash
+  if (splashStatusTitle) splashStatusTitle.textContent = 'WELCOME TO CLEANCORD';
+  finishStartup('login');
+}
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  setupEvents();
+  startQuoteRotator();
+
+  // Safety fallback timeout if pywebviewready doesn't fire (e.g. static browser preview or automated tests)
+  setTimeout(() => {
+    if (!appInitialized && (!window.pywebview || !window.pywebview.api)) {
+      performStartupSessionCheck();
+    }
+  }, 2200);
+});
+
+window.addEventListener('pywebviewready', () => {
+  performStartupSessionCheck();
 });

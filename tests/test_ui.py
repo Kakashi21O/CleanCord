@@ -92,6 +92,30 @@ class TestStaticUI(unittest.TestCase):
         self.assertIn('Kakashi21O/CleanCord', html_content)
         self.assertNotIn('id="btn-switch-account"', html_content)
 
+    def test_loading_screen_structure(self) -> None:
+        html_file = self.root / "frontend" / "index.html"
+        html_content = html_file.read_text(encoding="utf-8")
+        css_file = self.root / "frontend" / "styles.css"
+        css_content = css_file.read_text(encoding="utf-8")
+        js_file = self.root / "frontend" / "app.js"
+        js_content = js_file.read_text(encoding="utf-8")
+
+        # HTML elements
+        self.assertIn('id="loading-view"', html_content)
+        self.assertIn('id="splash-status-title"', html_content)
+        self.assertIn('id="splash-quote-text"', html_content)
+        self.assertIn('splash-orbit-ring', html_content)
+        self.assertIn('splash-logo-circle', html_content)
+
+        # CSS circular animation
+        self.assertIn('logoCircularMotion', css_content)
+        self.assertIn('orbitRingSpin', css_content)
+
+        # JS startup quotes
+        self.assertIn('DISCORD_LOADING_QUOTES', js_content)
+        self.assertIn('DID YOU KNOW:', js_content)
+
+
 
 if __name__ == "__main__":
     unittest.main()

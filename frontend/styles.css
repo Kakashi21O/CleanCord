@@ -1191,21 +1191,34 @@ body {
 }
 
 @keyframes circlePopPulse {
-  0%, 100% {
+  0% {
     transform: scale(1);
     box-shadow: 0 8px 24px rgba(88, 101, 242, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
   }
-  25% {
-    transform: scale(1.08); /* Pop up big */
-    box-shadow: 0 14px 32px rgba(88, 101, 242, 0.28), 0 4px 10px rgba(0, 0, 0, 0.08);
+  6% {
+    transform: scale(0.93);
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.1), 0 1px 3px rgba(0, 0, 0, 0.04);
   }
-  50% {
-    transform: scale(0.92); /* Pop down small */
-    box-shadow: 0 4px 14px rgba(88, 101, 242, 0.12), 0 1px 4px rgba(0, 0, 0, 0.04);
+  18% {
+    transform: scale(1.10); /* Pop up big during spin */
+    box-shadow: 0 16px 36px rgba(88, 101, 242, 0.3), 0 4px 12px rgba(0, 0, 0, 0.08);
   }
-  75% {
-    transform: scale(1.08); /* Pop up big */
-    box-shadow: 0 14px 32px rgba(88, 101, 242, 0.28), 0 4px 10px rgba(0, 0, 0, 0.08);
+  28% {
+    transform: scale(0.93); /* Pop down small */
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.1), 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+  38% {
+    transform: scale(1.03);
+    box-shadow: 0 10px 26px rgba(88, 101, 242, 0.18), 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+  44% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(88, 101, 242, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+  /* Wait at default position */
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(88, 101, 242, 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -1215,22 +1228,35 @@ body {
   height: 48px;
   filter: drop-shadow(0 2px 4px rgba(88, 101, 242, 0.3));
   transform-origin: center center;
-  animation: logoRotateInPlace 2.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation: logoRotateInPlace 2.6s ease-in-out infinite;
 }
 
 @keyframes logoRotateInPlace {
+  /* Starts from default upright position */
   0% {
     transform: rotate(0deg) scale(1);
   }
-  25% {
-    transform: rotate(90deg) scale(1.22); /* Pop up big */
+  /* Quick anticipation crouch / pop-in */
+  6% {
+    transform: rotate(20deg) scale(0.84);
   }
-  50% {
-    transform: rotate(180deg) scale(0.84); /* Pop down small */
+  /* Fast 360 spin + pop out big */
+  18% {
+    transform: rotate(140deg) scale(1.26);
   }
-  75% {
-    transform: rotate(270deg) scale(1.22); /* Pop up big */
+  /* Pop in small while continuing spin */
+  28% {
+    transform: rotate(260deg) scale(0.86);
   }
+  /* Fast overshoot */
+  38% {
+    transform: rotate(366deg) scale(1.08);
+  }
+  /* Settles at exact 360 (default upright position) */
+  44% {
+    transform: rotate(360deg) scale(1);
+  }
+  /* Wait at default position for a small time before repeating */
   100% {
     transform: rotate(360deg) scale(1);
   }

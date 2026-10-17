@@ -19,6 +19,17 @@ class TestDesktopWindow(unittest.TestCase):
         self.assertTrue(str(icon_path).endswith("cleancord.ico"))
 
 
+    def test_saved_credential_status_does_not_expose_secret(self) -> None:
+        class FakeCredentialStore:
+            def get_credential(self):
+                return "never-return-this-token"
+
+        bridge = DesktopBridge(credential_store=FakeCredentialStore())
+        status = bridge.get_saved_credential()
+        self.assertTrue(status["has_saved"])
+        self.assertNotIn("token", status)
+        self.assertNotIn("never-return-this-token", str(status))
+
     def test_bridge_get_status(self) -> None:
         bridge = DesktopBridge()
         status = bridge.get_status()

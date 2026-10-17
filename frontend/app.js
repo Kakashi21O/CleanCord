@@ -679,36 +679,92 @@ async function loadServers() {
   renderList();
 }
 
+// Startup checklist helpers. The secret itself never crosses the Python/JS bridge.
+const startupScreen = document.getElementById('startup-screen');
+const startupStatusText = document.getElementById('startup-status-text');
+const startupProgressFill = document.getElementById('startup-progress-fill');
+let startupCompleted = false;
+let desktopBridgeReady = false;
+
+function setStartupStep(name, state, label) {
+  if (!startupScreen) return;
+  const row = startupScreen.querySelector(`[data-startup-step="${name}"]`);
+  if (!row) return;
+  row.dataset.state = state;
+  const icon = row.querySelector('.startup-step-icon');
+  const status = row.querySelector('.startup-step-status');
+  if (icon) icon.textContent = state === 'complete' ? '✓' : state === 'skipped' ? '–' : '';
+  if (status) status.textContent = label || ({
+    active: 'Working', pending: 'Waiting', complete: 'Done', skipped: 'Skipped'
+  }[state] || state);
+  const steps = [...startupScreen.querySelectorAll('[data-startup-step]')];
+  const finished = steps.filter(step => ['complete', 'skipped'].includes(step.dataset.state)).length;
+  if (startupProgressFill) startupProgressFill.style.width = `${Math.round((finished / Math.max(steps.length, 1)) * 100)}%`;
+}
+
+function finishStartup(message) {
+  if (startupCompleted) return;
+  startupCompleted = true;
+  setStartupStep('ready', 'complete', 'Ready');
+  if (startupStatusText && message) startupStatusText.textContent = message;
+  if (startupProgressFill) startupProgressFill.style.width = '100%';
+  if (!startupScreen) return;
+  startupScreen.classList.add('is-hiding');
+  window.setTimeout(() => { startupScreen.hidden = true; }, 220);
+}
+
+function skipRemainingStartupSteps() {
+  setStartupStep('bridge', 'skipped', 'Unavailable');
+  setStartupStep('session', 'skipped', 'Sign in');
+  setStartupStep('servers', 'skipped', 'After sign-in');
+  finishStartup('The sign-in screen is ready.');
+}
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
   setupEvents();
-  // App starts strictly locked at Login Screen (Demo Mode removed from default entry)
+  setStartupStep('interface', 'complete', 'Ready');
+  setStartupStep('bridge', 'active', 'Connecting');
+
+  // Prevent a permanent splash if the native bridge is not available (e.g. browser preview).
+  window.setTimeout(() => {
+    if (!desktopBridgeReady && !startupCompleted) skipRemainingStartupSteps();
+  }, 2000);
 });
 
 window.addEventListener('pywebviewready', async () => {
-  // Check if credentials exist in Windows Credential Manager and restore session
-  if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_saved_credential === 'function') {
-    try {
-      const saved = await window.pywebview.api.get_saved_credential();
-      if (saved && saved.has_saved && saved.token) {
-        // Automatically restore login state using saved secret
-        const res = await window.pywebview.api.connect_token(saved.token, true);
-        if (res && res.success) {
-          enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Auto-login from credential manager skipped:', err);
-    }
-  }
+  desktopBridgeReady = true;
+  setStartupStep('bridge', 'complete', 'Connected');
+  setStartupStep('session', 'active', 'Checking');
 
-  // If backend was initialized with live token directly, auto-enter
-  if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_status === 'function') {
-    window.pywebview.api.get_status().then(status => {
-      if (status && status.mode === 'live') {
-        enterAppView('Connected User');
+  let finalMessage = 'No saved account detected — sign in to continue.';
+  try {
+    const api = window.pywebview && window.pywebview.api;
+    if (api && typeof api.restore_saved_session === 'function') {
+      const result = await api.restore_saved_session();
+      if (result && result.has_saved && result.success) {
+        setStartupStep('session', 'complete', 'Restored');
+        setStartupStep('servers', 'complete', `${result.server_count || 0} loaded`);
+        finalMessage = 'Saved session restored. Opening your workspace…';
+        enterAppView(result.username, result.server_count, result.avatar_url, result.mode || 'live');
+      } else {
+        setStartupStep('session', result && result.has_saved ? 'skipped' : 'skipped',
+          result && result.has_saved ? 'Sign in again' : 'Not signed in');
+        setStartupStep('servers', 'skipped', 'After sign-in');
+        finalMessage = result && result.has_saved
+          ? 'Saved session could not be restored — please sign in again.'
+          : 'No saved account detected — sign in to continue.';
       }
-    }).catch(() => {});
+    } else {
+      setStartupStep('session', 'skipped', 'Sign in');
+      setStartupStep('servers', 'skipped', 'After sign-in');
+      finalMessage = 'Desktop bridge connected. Sign in to continue.';
+    }
+  } catch (error) {
+    console.warn('Startup session check failed:', error);
+    setStartupStep('session', 'skipped', 'Sign in again');
+    setStartupStep('servers', 'skipped', 'After sign-in');
+    finalMessage = 'Startup checks finished. Please sign in to continue.';
   }
+  finishStartup(finalMessage);
 });

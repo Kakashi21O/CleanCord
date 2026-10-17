@@ -98,12 +98,34 @@ class DesktopBridge:
         }
 
     def get_saved_credential(self) -> Dict[str, Any]:
-        """Check for saved credential in Windows Credential Manager without logging it."""
+        """Report whether a credential exists without exposing the secret to JavaScript."""
         if hasattr(self, "credential_store") and self.credential_store:
             saved_token = self.credential_store.get_credential()
-            if saved_token:
-                return {"has_saved": True, "token": saved_token}
-        return {"has_saved": False, "token": None}
+            return {"has_saved": bool(saved_token)}
+        return {"has_saved": False}
+
+    def restore_saved_session(self) -> Dict[str, Any]:
+        """Restore a saved session entirely in Python; never return the token over the JS bridge."""
+        saved_token = None
+        if hasattr(self, "credential_store") and self.credential_store:
+            saved_token = self.credential_store.get_credential()
+
+        if not saved_token:
+            return {"success": False, "has_saved": False}
+
+        result = self.connect_token(saved_token, remember_me=False)
+        result["has_saved"] = True
+
+        # Remove a definitively invalid/expired credential. Keep it on transient network errors.
+        if (
+            not result.get("success")
+            and result.get("error") == "Invalid or expired Discord token"
+            and hasattr(self, "credential_store")
+            and self.credential_store
+        ):
+            self.credential_store.delete_credential()
+
+        return result
 
     def logout(self) -> Dict[str, bool]:
         """Log out user, reset live session, and securely delete saved credentials."""

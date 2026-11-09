@@ -2,13 +2,15 @@
 
 A lightweight Windows desktop application for viewing, searching, and leaving Discord servers through a clean, minimal interface.
 
-[![Download CleanCord](https://img.shields.io/badge/Download-CleanCord.exe%20(v1.0.0)-blue?style=for-the-badge&logo=windows)](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe)
+**Author:** Nova (electro_blaz)
+
+[![Download CleanCord](https://img.shields.io/badge/Download-CleanCord.exe%20(v1.0.1)-blue?style=for-the-badge&logo=windows)](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe)
 
 ## 📥 Download & Install (For Users)
 
 Anyone can download and run CleanCord on Windows without installing Python:
 
-1. Go to the [**CleanCord v1.0.0 Release**](https://github.com/Kakashi21O/CleanCord/releases/tag/v1.0.0) or click [**Direct Download (CleanCord.exe)**](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe).
+1. Go to the [**CleanCord v1.0.1 Release**](https://github.com/Kakashi21O/CleanCord/releases/tag/v1.0.1) or click [**Direct Download (CleanCord.exe)**](https://github.com/Kakashi21O/CleanCord/releases/latest/download/CleanCord.exe).
 2. Download `CleanCord.exe`.
 3. Double-click `CleanCord.exe` to run the app immediately (no installation or setup required).
 
@@ -21,7 +23,6 @@ Anyone can download and run CleanCord on Windows without installing Python:
 - ☑️ **Select / deselect all** eligible servers at once
 - 🛡️ **Owner protection** — servers you own are never eligible for cleanup
 - 👁️ **Preview cleanup** — see exactly which servers will be left before confirming
-- 📤 **Export** server list to JSON or CSV
 - 💾 **Persistent preferences** — window size and sort order saved locally
 - 🖥️ **Native desktop window** with a real Windows icon (`cleancord.ico`)
 

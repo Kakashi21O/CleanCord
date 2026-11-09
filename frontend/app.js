@@ -406,8 +406,7 @@ function renderList() {
     const initial = server.name ? server.name.charAt(0).toUpperCase() : '?';
 
     card.innerHTML = `
-      <div class="server-row-main" tabindex="0" role="button" aria-expanded="false" aria-label="Toggle details for ${escapeHtml(server.name)}">
-        <span class="expand-chevron" aria-hidden="true">▶</span>
+      <div class="server-row-main">
         <div class="server-icon" aria-hidden="true">${server.icon_url ? `<img class="server-icon-img" src="${escapeHtml(server.icon_url)}" alt="" loading="lazy" onerror="this.remove()" />` : ""}${initial}</div>
         <div class="server-info">
           <div class="server-title-row">
@@ -427,33 +426,13 @@ function renderList() {
           >
         </div>
       </div>
-      <div class="server-details">
-        <p><strong>Status:</strong> ${isOwner ? 'Owned by you (Protected)' : 'Member'}</p>
-        <p><strong>Category:</strong> ${escapeHtml(server.category)}</p>
-        <p><strong>Identifier:</strong> <code>${escapeHtml(server.id)}</code></p>
-      </div>
     `;
 
-    // Row expansion click (must NOT toggle checkbox)
-    const mainRow = card.querySelector('.server-row-main');
-    mainRow.addEventListener('click', (e) => {
-      if (e.target.closest('.server-checkbox-wrapper')) return;
-      const isExpanded = card.classList.toggle('expanded');
-      mainRow.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-    });
-
-    mainRow.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        if (e.target.closest('.server-checkbox-wrapper')) return;
-        e.preventDefault();
-        const isExpanded = card.classList.toggle('expanded');
-        mainRow.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
-      }
-    });
-
-    // Checkbox toggle logic
+    // Card click toggle logic
     const checkbox = card.querySelector('.server-checkbox');
-    checkbox.addEventListener('change', () => {
+    card.addEventListener('click', (e) => {
+      if (isOwner) return;
+      if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
       if (checkbox.checked) {
         selectedServerIds.add(server.id);
         card.classList.add('selected');
@@ -559,58 +538,6 @@ function setupEvents() {
     btnDeselectAll.addEventListener('click', () => {
       selectedServerIds.clear();
       renderList();
-    });
-  }
-
-  // Export buttons
-  const btnExportJson = document.getElementById('btn-export-json');
-  const btnExportCsv = document.getElementById('btn-export-csv');
-
-  function triggerDownload(content, filename, type) {
-    const blob = new Blob([content], { type });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  if (btnExportJson) {
-    btnExportJson.addEventListener('click', async () => {
-      try {
-        let content = '';
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.export_servers_json === 'function') {
-          content = await window.pywebview.api.export_servers_json();
-        } else {
-          content = JSON.stringify(allServers, null, 2);
-        }
-        triggerDownload(content, 'discord-servers.json', 'application/json');
-      } catch (err) {
-        console.error('Failed to export JSON:', err);
-      }
-    });
-  }
-
-  if (btnExportCsv) {
-    btnExportCsv.addEventListener('click', async () => {
-      try {
-        let content = '';
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.export_servers_csv === 'function') {
-          content = await window.pywebview.api.export_servers_csv();
-        } else {
-          const lines = ['id,name,owner,category'];
-          allServers.forEach(s => {
-            lines.push(`"${s.id}","${s.name.replace(/"/g, '""')}","${s.owner}","${s.category}"`);
-          });
-          content = lines.join('\n');
-        }
-        triggerDownload(content, 'discord-servers.csv', 'text/csv');
-      } catch (err) {
-        console.error('Failed to export CSV:', err);
-      }
     });
   }
 

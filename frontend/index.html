@@ -168,7 +168,11 @@
           <div class="menu-about-title">About CleanCord</div>
           <div class="menu-about-meta">
             <span>Version</span>
-            <span class="menu-meta-value">v1.0.0</span>
+            <span class="menu-meta-value">v1.0.1</span>
+          </div>
+          <div class="menu-about-meta">
+            <span>Author</span>
+            <span class="menu-meta-value">Nova (electro_blaz)</span>
           </div>
           <div class="menu-about-meta">
             <span>GitHub</span>
@@ -210,26 +214,32 @@
           Sort: <span id="sort-order-label">A-Z</span>
         </button>
       </div>
-      <div class="category-chips" id="category-chips" role="group" aria-label="Category filters">
-        <button class="filter-chip active" data-category="ALL">All</button>
-        <button class="filter-chip" data-category="Gaming">Gaming</button>
-        <button class="filter-chip" data-category="Anime">Anime</button>
-        <button class="filter-chip" data-category="Development">Development</button>
-        <button class="filter-chip" data-category="Crypto / DeFi">Crypto / DeFi</button>
-        <button class="filter-chip" data-category="NFT">NFT</button>
-        <button class="filter-chip" data-category="Trading">Trading</button>
-        <button class="filter-chip" data-category="Other">Other</button>
-      </div>
-    </section>
-
-    <!-- Selection Toolbar -->
-    <section class="selection-toolbar">
-      <div class="selection-summary">
-        <span id="selection-count">0</span> servers selected to leave
-      </div>
-      <div class="selection-actions">
-        <button id="btn-select-all" class="btn-text">Select All</button>
-        <button id="btn-deselect-all" class="btn-text">Deselect All</button>
+      <div class="filter-actions-row">
+        <div class="category-chips" id="category-chips" role="group" aria-label="Category filters">
+          <button class="filter-chip active" data-category="ALL">All</button>
+          <button class="filter-chip" data-category="Gaming">Gaming</button>
+          <button class="filter-chip" data-category="Anime">Anime</button>
+          <button class="filter-chip" data-category="Development">Development</button>
+          <button class="filter-chip" data-category="Crypto / DeFi">Crypto / DeFi</button>
+          <button class="filter-chip" data-category="NFT">NFT</button>
+          <button class="filter-chip" data-category="Trading">Trading</button>
+          <button class="filter-chip" data-category="Other">Other</button>
+        </div>
+        <div class="selection-actions">
+          <button id="btn-select-all" class="btn-icon-action" title="Select All" aria-label="Select All">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </button>
+          <button id="btn-deselect-all" class="btn-icon-action" title="Deselect All" aria-label="Deselect All">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -240,12 +250,9 @@
 
     <!-- Footer / Action Bar -->
     <footer class="footer-actions">
-      <div class="export-group">
-        <button id="btn-export-json" class="btn-secondary">Export JSON</button>
-        <button id="btn-export-csv" class="btn-secondary">Export CSV</button>
-      </div>
+      <div></div>
       <button id="btn-preview-cleanup" class="btn-destructive" disabled>
-        Preview Cleanup
+        Cleanup
       </button>
     </footer>
   </div>

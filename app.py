@@ -1,5 +1,6 @@
 """Application entry point and pywebview desktop shell lifecycle."""
 import sys
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -11,6 +12,9 @@ DEFAULT_WIDTH = 960
 DEFAULT_HEIGHT = 700
 MIN_WIDTH = 800
 MIN_HEIGHT = 600
+MUTEX_NAME = "CleanCord_SingleInstance_Mutex"
+CLICK_DEBOUNCE_SECONDS = 0.8
+_mutex_handle = None
 
 
 def get_base_path() -> Path:
@@ -29,6 +33,67 @@ def get_app_icon_path() -> Optional[Path]:
     """Resolve path to native CleanCord application icon."""
     icon_path = get_base_path() / "assets" / "cleancord.ico"
     return icon_path if icon_path.is_file() else None
+
+
+def focus_existing_window() -> bool:
+    """Bring the existing application window to front on Windows."""
+    if sys.platform != "win32":
+        return False
+    try:
+        import ctypes
+        hwnd = ctypes.windll.user32.FindWindowW(None, APP_TITLE)
+        if hwnd:
+            # SW_RESTORE = 9
+            ctypes.windll.user32.ShowWindow(hwnd, 9)
+            ctypes.windll.user32.SetForegroundWindow(hwnd)
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def is_ctrl_held() -> bool:
+    """Check if Ctrl key is currently pressed."""
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            # VK_CONTROL = 0x11
+            return bool(ctypes.windll.user32.GetKeyState(0x11) & 0x8000)
+        except Exception:
+            pass
+    return "--new-tab" in sys.argv or "-n" in sys.argv
+
+
+def check_and_update_debounce() -> bool:
+    """Return True if enough time elapsed since last click/launch attempt."""
+    lock_file = Path(get_base_path()) / ".instance_click"
+    now = time.time()
+    try:
+        if lock_file.is_file():
+            last = float(lock_file.read_text(encoding="utf-8").strip())
+            if now - last < CLICK_DEBOUNCE_SECONDS:
+                return False
+        lock_file.write_text(str(now), encoding="utf-8")
+    except Exception:
+        pass
+    return True
+
+
+def acquire_single_instance_lock() -> bool:
+    """Acquire single-instance mutex. Returns True if first instance, False if already running."""
+    global _mutex_handle
+    if sys.platform != "win32":
+        return True
+    try:
+        import ctypes
+        # CreateMutexW(lpMutexAttributes, bInitialOwner, lpName)
+        _mutex_handle = ctypes.windll.kernel32.CreateMutexW(None, True, MUTEX_NAME)
+        # ERROR_ALREADY_EXISTS = 183
+        if ctypes.windll.kernel32.GetLastError() == 183:
+            return False
+        return True
+    except Exception:
+        return True
 
 
 def apply_native_titlebar_theme(window: webview.Window) -> None:
@@ -81,7 +146,21 @@ def create_window(bridge: Optional[DesktopBridge] = None) -> webview.Window:
 
 
 def main() -> None:
-    """Launch desktop window."""
+    """Launch desktop window with single-instance lock and focus handling."""
+    # Check if user wants a new tab / window with Ctrl held
+    ctrl_held = is_ctrl_held()
+
+    if not ctrl_held:
+        # Ignore accidental double/multi clicks
+        if not check_and_update_debounce():
+            focus_existing_window()
+            return
+
+        # Single instance check
+        if not acquire_single_instance_lock():
+            focus_existing_window()
+            return
+
     bridge = DesktopBridge()
     create_window(bridge)
     icon_path = get_app_icon_path()
@@ -91,4 +170,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

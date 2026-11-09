@@ -68,6 +68,34 @@ class TestDesktopWindow(unittest.TestCase):
 
 
 
+    @patch("app.focus_existing_window")
+    @patch("app.acquire_single_instance_lock", return_value=False)
+    @patch("app.is_ctrl_held", return_value=False)
+    @patch("webview.start")
+    def test_single_instance_focuses_when_already_running(
+        self,
+        mock_start: MagicMock,
+        mock_ctrl: MagicMock,
+        mock_lock: MagicMock,
+        mock_focus: MagicMock,
+    ) -> None:
+        app.main()
+        mock_focus.assert_called_once()
+        mock_start.assert_not_called()
+
+    @patch("app.create_window")
+    @patch("app.is_ctrl_held", return_value=True)
+    @patch("webview.start")
+    def test_ctrl_held_opens_new_instance(
+        self,
+        mock_start: MagicMock,
+        mock_ctrl: MagicMock,
+        mock_create_win: MagicMock,
+    ) -> None:
+        app.main()
+        mock_create_win.assert_called_once()
+        mock_start.assert_called_once()
+
     def test_bridge_query_and_selection(self) -> None:
         bridge = DesktopBridge()
         servers = bridge.get_servers(query="Elden")
@@ -83,15 +111,6 @@ class TestDesktopWindow(unittest.TestCase):
         # Select all in filtered view excludes owned servers
         all_filtered = bridge.select_all_filtered()
         self.assertNotIn(owned_id, all_filtered)
-
-    def test_bridge_export_methods(self) -> None:
-        bridge = DesktopBridge()
-        json_export = bridge.export_servers_json(query="Elden")
-        self.assertIn("Elden Ring Community", json_export)
-
-        csv_export = bridge.export_servers_csv(query="Elden")
-        self.assertIn("Elden Ring Community", csv_export)
-        self.assertIn("id,name,owner,category,icon_url", csv_export)
 
     def test_connect_token_validation(self) -> None:
         bridge = DesktopBridge()

@@ -18,3 +18,4 @@ dist/
 
 # Local AI instructions and context
 AI/
+.instance_click

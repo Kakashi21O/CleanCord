@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Standalone Executable
         run: |
-          pyinstaller --noconfirm CleanCord.spec
+          pyinstaller --noconfirm --clean --onefile --windowed --name CleanCord --icon assets/cleancord.ico --add-data "frontend;frontend" --add-data "assets;assets" --version-file version_info.txt app.py
 
       - name: Generate SHA-256 Checksum
         run: |

@@ -778,7 +778,7 @@ async function performStartupSessionCheck() {
         if (splashStatusTitle) splashStatusTitle.textContent = 'CONNECTING TO DISCORD...';
         const res = await window.pywebview.api.connect_token(saved.token, true);
         if (res && res.success) {
-          if (splashStatusTitle) splashStatusTitle.textContent = 'PREPARING SERVERS...';
+          if (splashStatusTitle) splashStatusTitle.textContent = 'PREPARING YOUR SERVERS...';
           finishStartup('app', () => {
             enterAppView(res.username, res.server_count, res.avatar_url, res.mode || 'live');
           });

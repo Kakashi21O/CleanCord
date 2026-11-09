@@ -43,6 +43,7 @@ Because this is a fresh release without an expensive paid corporate certificate,
 - ☑️ **Select / deselect all** eligible servers at once
 - 🛡️ **Owner protection** — servers you own are never eligible for cleanup
 - 👁️ **Preview cleanup** — see exactly which servers will be left before confirming
+- 🪟 **Single Instance & Multi-Tab Support** — launches as a single instance and focuses the existing window on re-click; hold **Ctrl** while opening to launch multiple windows/tabs
 - 💾 **Persistent preferences** — window size and sort order saved locally
 - 🖥️ **Native desktop window** with a real Windows icon (`cleancord.ico`)
 

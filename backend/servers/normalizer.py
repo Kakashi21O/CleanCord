@@ -27,7 +27,8 @@ def normalize_discord_guild(raw_guild: Dict[str, Any]) -> Optional[Server]:
     icon_hash = raw_guild.get("icon")
     icon_url = None
     if icon_hash:
-        icon_url = f"https://cdn.discordapp.com/icons/{guild_id}/{icon_hash}.png"
+        ext = "gif" if str(icon_hash).startswith("a_") else "png"
+        icon_url = f"https://cdn.discordapp.com/icons/{guild_id}/{icon_hash}.{ext}?size=256"
 
     owner = bool(raw_guild.get("owner", False))
     category = infer_category(name)

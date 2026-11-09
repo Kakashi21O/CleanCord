@@ -118,7 +118,17 @@ class TestServerServices(unittest.TestCase):
         self.assertEqual(server.name, "Rust & Python Hackers")
         self.assertTrue(server.owner)
         self.assertEqual(server.category, "Development")
-        self.assertEqual(server.icon_url, "https://cdn.discordapp.com/icons/789123456/abc123iconhash.png")
+        self.assertEqual(server.icon_url, "https://cdn.discordapp.com/icons/789123456/abc123iconhash.png?size=256")
+
+        # Animated icon check
+        raw_animated = {
+            "id": "789123456",
+            "name": "Animated Server",
+            "icon": "a_abc123gifhash",
+        }
+        server_anim = normalize_discord_guild(raw_animated)
+        self.assertIsNotNone(server_anim)
+        self.assertEqual(server_anim.icon_url, "https://cdn.discordapp.com/icons/789123456/a_abc123gifhash.gif?size=256")
 
         # Incomplete raw entries are safely filtered
         batch = normalize_guilds_batch([raw, {"id": "", "name": ""}])

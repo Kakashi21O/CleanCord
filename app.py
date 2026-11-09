@@ -1,5 +1,6 @@
 """Application entry point and pywebview desktop shell lifecycle."""
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Optional
@@ -53,20 +54,29 @@ def focus_existing_window() -> bool:
 
 
 def is_ctrl_held() -> bool:
-    """Check if Ctrl key is currently pressed."""
+    """Check if Ctrl key is currently held (or launched with --new-tab / -n / --ctrl flag)."""
     if sys.platform == "win32":
         try:
             import ctypes
-            # VK_CONTROL = 0x11
-            return bool(ctypes.windll.user32.GetKeyState(0x11) & 0x8000)
+            # VK_CONTROL = 0x11, VK_LCONTROL = 0xA2, VK_RCONTROL = 0xA3
+            # Check GetAsyncKeyState (real-time hardware state) and GetKeyState
+            u32 = ctypes.windll.user32
+            ctrl_pressed = (
+                bool(u32.GetAsyncKeyState(0x11) & 0x8000)
+                or bool(u32.GetAsyncKeyState(0xA2) & 0x8000)
+                or bool(u32.GetAsyncKeyState(0xA3) & 0x8000)
+                or bool(u32.GetKeyState(0x11) & 0x8000)
+            )
+            if ctrl_pressed:
+                return True
         except Exception:
             pass
-    return "--new-tab" in sys.argv or "-n" in sys.argv
+    return "--new-tab" in sys.argv or "-n" in sys.argv or "--ctrl" in sys.argv
 
 
 def check_and_update_debounce() -> bool:
     """Return True if enough time elapsed since last click/launch attempt."""
-    lock_file = Path(get_base_path()) / ".instance_click"
+    lock_file = Path(tempfile.gettempdir()) / "cleancord_instance_click.lock"
     now = time.time()
     try:
         if lock_file.is_file():

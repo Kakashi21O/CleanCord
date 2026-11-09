@@ -14,6 +14,26 @@ Anyone can download and run CleanCord on Windows without installing Python:
 2. Download `CleanCord.exe`.
 3. Double-click `CleanCord.exe` to run the app immediately (no installation or setup required).
 
+### 🛡️ Browser & Windows SmartScreen Notice (Safe to Run)
+
+CleanCord is **100% free and open-source**. Every single line of code is publicly viewable here on GitHub, and the executable is built transparently via GitHub Actions with verifiable SHA-256 checksums. There is **nothing to fear**.
+
+Because this is a fresh release without an expensive paid corporate certificate, your browser or Windows may show a standard prompt:
+
+#### 1. Microsoft Edge / Chrome Warning (*"CleanCord.exe isn't commonly downloaded..."*)
+- **Why:** Microsoft Edge shows this for newly published files that haven't reached thousands of downloads yet.
+- **How to bypass:**
+  1. Hover over the downloaded file in your browser's download bar.
+  2. Click the three dots (**`...`**) next to the download.
+  3. Select **Keep**.
+  4. If prompted with *"Make sure you trust CleanCord.exe before you open it"*, click **Show more** and select **Keep anyway**.
+
+#### 2. Windows SmartScreen (*"Windows protected your PC — Microsoft Defender SmartScreen prevented an unrecognized app from starting"*)
+- **Why:** Windows SmartScreen automatically builds reputation over time as more users download and run `CleanCord.exe`. Until then, it flags newly released `.exe` files.
+- **How to bypass:**
+  1. Click **More info**.
+  2. Click **Run anyway**.
+
 ---
 
 ## Features
